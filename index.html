@@ -193,16 +193,38 @@
     margin-bottom:18px;
   }
   .warmup strong{display:block; font-family:'Fraunces',serif; font-size:15px; margin-bottom:4px; color:var(--ink);}
+  .warmup-list{list-style:none; margin:8px 0 0; padding:0; display:flex; flex-direction:column; gap:8px;}
+  .warmup-line{list-style:none; padding:2px 0;}
+  .warmup-item{background:rgba(255,255,255,0.55); border-color:rgba(255,255,255,0.7);}
+  .warmup-item .ex-tip{color:#2F4A31; font-style:normal; margin-top:0;}
+  .warmup-note{font-size:12px; color:#3C5A3D; opacity:.8; margin-top:10px; font-style:italic;}
+  .safety-note{
+    background:var(--clay-soft); color:#7A3821; font-size:13px; font-weight:500;
+    border-radius:10px; padding:10px 14px; margin-bottom:18px;
+  }
+  .lookahead-note{
+    margin-top:14px; padding:12px 14px; border-radius:10px; background:var(--gold-soft); color:#6B4A15; font-size:13px;
+  }
+  .lookahead-note strong{font-family:'Fraunces',serif; color:var(--ink);}
   .ex-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
   .ex-item{
     background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:12px 14px;
   }
   .ex-row{display:flex; gap:12px; align-items:flex-start;}
   .ex-info{flex:1; min-width:0;}
+  .ex-name-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   .ex-name{font-weight:600; font-size:14.5px;}
   .ex-name.struck{text-decoration:line-through; opacity:.5;}
+  .tier-badge{font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:999px; letter-spacing:.02em;}
+  .tier-mandatory{background:var(--gold); color:#fff;}
+  .tier-extra{background:transparent; border:1px solid var(--line); color:var(--ink-soft);}
+  .ex-divider{
+    list-style:none; font-size:12px; font-weight:700; color:var(--ink-soft);
+    text-transform:uppercase; letter-spacing:.04em; padding:10px 4px 2px; border-top:1px dashed var(--line); margin-top:4px;
+  }
   .ex-meta{font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
   .ex-tip{font-size:12.5px; color:var(--ink-soft); margin-top:4px; font-style:italic;}
+  .ex-why{font-size:12.5px; color:#8A6417; margin-top:6px; font-weight:600;}
   .ex-actions{display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex:0 0 auto;}
   .video-btn{
     font-size:12px; font-weight:600; color:var(--ink);
@@ -320,6 +342,10 @@
           <tr><td class="out">Bakery patties / fried snacks</td><td class="in">Grilled chicken tikka or shami kebab, minimal oil</td><td>Pure protein, no insulin spike before Maghrib.</td></tr>
         </table>
       </div>
+      <div class="habit-card" style="grid-column:1/-1;">
+        <h3>On the V-line and forearm definition</h3>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0;">The hanging leg raises, reverse crunch, and Russian twists build the muscle underneath the V-line — but whether it actually shows depends mostly on your body-fat percentage, not how many ab exercises you do. Same story with forearms: farmer's carries build the muscle, but definition shows once the fat over it drops. This is exactly why the tea rules, portion sizes, and snack swaps above matter as much as anything in the workout — they're what actually reveals what you're building.</p>
+      </div>
     </div>
   </section>
 </main>
@@ -344,7 +370,7 @@ function baseTimeline(workoutLabel){
     {time:'5:00 AM', title:'Back to sleep', note:'Second sleep block, about 2h15m.', cat:'rest'},
     {time:'7:15 AM', title:'Wake &amp; hydrate', note:'500 ml water. Optional black coffee or a banana before training.', cat:'rest'},
     workoutLabel
-      ? {time:'8:00 – 9:00 AM', title:'Gym — ' + workoutLabel, note:'8-min warm-up, then today\u2019s session below.', cat:'gym', jump:true}
+      ? {time:'8:00 – 9:00 AM', title:'Gym — ' + workoutLabel, note:'10-min warm-up, then today\u2019s session below.', cat:'gym', jump:true}
       : {time:'8:00 – 8:20 AM', title:'Light movement (optional)', note:'A short walk or stretching — no lifting today, let the last session recover.', cat:'rest'},
     {time:'9:15 – 9:45 AM', title:'Breakfast', note:'3–4 eggs + 1 slice brown bread/roti + sugar-free milk tea.', cat:'meal'},
     {time:'10:00 – 10:30 AM', title:'Head to office', note:'', cat:'rest'},
@@ -361,54 +387,60 @@ function baseTimeline(workoutLabel){
 }
 
 const WARMUP = {
-  title:'8-minute warm-up — do this before every session',
-  lines:[
-    '3–4 min light cardio (stationary bike or jump rope) to raise your core temperature.',
-    '2 sets × 10–12 slow bodyweight squats to open up hips and knees.',
-    '10 leg swings and 10 arm circles per side for joint mobility.',
-    'One light warm-up set of the first lift (empty bar or light dumbbells) before going heavy.',
+  title:'10-minute warm-up — do this before every session',
+  items:[
+    {text:'3–4 min light cardio (stationary bike or jump rope) to raise your core temperature.', video:'https://www.youtube.com/watch?v=nMHfZ-yrFjA', clip:'https://musclewiki.com/api-next/videos/male-Cardio-jump-rope-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Cardio-jump-rope-front.jpg', page:'https://musclewiki.com/exercise/jump-rope'},
+    {text:'Kneeling hip-flexor stretch, 30s per side — undoes hours of sitting and protects your squat/deadlift form.', video:'https://www.youtube.com/watch?v=Q4Ko275cluo', clip:'https://musclewiki.com/api-next/videos/male-Recovery-hip-flexor-stretch-kneeling-lunge-1-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Recovery-hip-flexor-stretch-kneeling-lunge-1-front.jpg', page:'https://musclewiki.com/exercise/hip-flexor-stretch-kneeling-lunge-1'},
+    {text:'Thoracic rotations or cat-cow, 8–10 reps — opens the upper back that desk posture rounds forward, helps your press and bench.'},
+    {text:'2 sets × 10–12 slow bodyweight squats to open up hips and knees.', video:'https://www.youtube.com/watch?v=D_CUqVqW4F8', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-bodyweight-squat-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-bodyweight-squat-front.jpg', page:'https://musclewiki.com/exercise/bodyweight-squat'},
+    {text:'10 leg swings and 10 arm circles per side for joint mobility.'},
+    {text:'One light warm-up set of the first lift (empty bar or light dumbbells) before going heavy.'},
   ]
 };
 
 const WORKOUTS = {
   push:{
     label:'Push — chest, shoulders, triceps &amp; core',
-    sub:'45 min heavy compound work, then a stamina/core finisher. ~60–75 min total.',
+    sub:'Mandatory block first, then extras if time and stamina allow. ~60–75 min total.',
     exercises:[
-      {name:'Incline dumbbell press', meta:'Upper chest & front delts · 4×6–8 · rest 120s', tip:'30° bench, elbows tucked ~45° from your torso — don\u2019t flare wide.', video:'http://www.youtube.com/watch?v=ou6s32mJgjU', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-incline-bench-press-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-incline-bench-press-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-incline-bench-press'},
-      {name:'Standing barbell overhead press', meta:'Shoulders & core · 3×6–8 · rest 90s', tip:'Brace your core and glutes, move your head back as the bar passes, press straight overhead.', video:'http://www.youtube.com/watch?v=nNMR9fRGRjQ', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-overhead-press-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-overhead-press-front.jpg', page:'https://musclewiki.com/exercise/barbell-overhead-press'},
-      {name:'Dumbbell lateral raises', meta:'Side shoulders · 3×12–15 · rest 60s', tip:'Lean slightly forward, raise in the scapular plane — a touch ahead of straight out to the side.', video:'http://www.youtube.com/watch?v=Kl3LEzQ5Zqs', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-lateral-raise-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-lateral-raise-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-lateral-raise'},
-      {name:'Parallel bar dips (or bench dips)', meta:'Lower chest & triceps · 3×8–10 · rest 60s', tip:'Lean forward for chest, stay upright for triceps. Avoid going below 90° if shoulders complain.', video:'http://www.youtube.com/watch?v=P5TlJiu68lA', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-bench-dips-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-bench-dips-front.jpg', page:'https://musclewiki.com/exercise/bench-dips'},
-      {name:'Tricep rope pushdowns', meta:'Triceps · 3×12 · rest 60s', tip:'Pin elbows to your sides, squeeze fully at the bottom, control the way back up.', video:'http://www.youtube.com/watch?v=1FjkhpZsaxc', clip:'https://musclewiki.com/api-next/videos/male-Machine-machine-tricep-pushdown-side.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Machine-machine-tricep-pushdown-side.jpg', page:'https://musclewiki.com/exercise/machine-tricep-pushdown'},
-      {name:'Hanging leg raises', meta:'Lower abs · 3×12–15 · rest 45s', tip:'Curl your pelvis up rather than just swinging the legs.', video:'http://www.youtube.com/watch?v=Pr1ieGZ5atk', clip:'https://musclewiki.com/api-next/videos/male-bodyweight-hanging-knee-raises-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-bodyweight-hanging-knee-raises-front.jpg', page:'https://musclewiki.com/exercise/hanging-knee-raises'},
+      {tier:'mandatory', name:'Incline dumbbell press', meta:'Upper chest & front delts · 4×6–8 · rest 120s', tip:'30° bench, elbows tucked ~45° from your torso — don\u2019t flare wide.', why:'Upper-chest fullness is the first thing people notice through a t-shirt — this is where that V-taper starts.', video:'http://www.youtube.com/watch?v=ou6s32mJgjU', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-incline-bench-press-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-incline-bench-press-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-incline-bench-press'},
+      {tier:'mandatory', name:'Standing barbell overhead press', meta:'Shoulders & core · 3×6–8 · rest 90s', tip:'Brace your core and glutes, move your head back as the bar passes, press straight overhead.', why:'Boulder shoulders are Anatoly\u2019s signature look — nothing builds that width faster than pressing overhead.', video:'http://www.youtube.com/watch?v=nNMR9fRGRjQ', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-overhead-press-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-overhead-press-front.jpg', page:'https://musclewiki.com/exercise/barbell-overhead-press'},
+      {tier:'mandatory', name:'Parallel bar dips (or bench dips)', meta:'Lower chest & triceps · 3×8–10 · rest 60s', tip:'Lean forward for chest, stay upright for triceps. Avoid going below 90° if shoulders complain.', why:'Carves the tricep horseshoe that shows the second you roll your sleeves up.', video:'http://www.youtube.com/watch?v=P5TlJiu68lA', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-bench-dips-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-bench-dips-front.jpg', page:'https://musclewiki.com/exercise/bench-dips'},
+      {tier:'mandatory', name:'Hanging leg raises', meta:'Lower abs · 3×12–15 · rest 45s', tip:'Curl your pelvis up rather than just swinging the legs.', why:'Directly builds the lower-ab V-line you asked for, and protects your back when you pick up your kid.', video:'http://www.youtube.com/watch?v=Pr1ieGZ5atk', clip:'https://musclewiki.com/api-next/videos/male-bodyweight-hanging-knee-raises-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-bodyweight-hanging-knee-raises-front.jpg', page:'https://musclewiki.com/exercise/hanging-knee-raises'},
+      {tier:'extra', name:'Dumbbell lateral raises', meta:'Side shoulders · 3×12–15 · rest 60s', tip:'Lean slightly forward, raise in the scapular plane — a touch ahead of straight out to the side.', why:'The cheapest way to add shoulder width — it makes your waist look narrower without losing a pound.', video:'http://www.youtube.com/watch?v=Kl3LEzQ5Zqs', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-lateral-raise-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-lateral-raise-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-lateral-raise'},
+      {tier:'extra', name:'Tricep rope pushdowns', meta:'Triceps · 3×12 · rest 60s', tip:'Pin elbows to your sides, squeeze fully at the bottom, control the way back up.', why:'This is what makes an arm look separated and defined, not just bigger.', video:'http://www.youtube.com/watch?v=1FjkhpZsaxc', clip:'https://musclewiki.com/api-next/videos/male-Machine-machine-tricep-pushdown-side.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Machine-machine-tricep-pushdown-side.jpg', page:'https://musclewiki.com/exercise/machine-tricep-pushdown'},
+      {tier:'extra', name:'Reverse crunch', meta:'Lower abs · 3×12–15 · rest 45s', tip:'Curl your hips toward your ribs, not your knees toward your face — slow and controlled, no swinging.', why:'A second angle on the V-line — the lower-ab detail most people skip because it\u2019s the hardest to feel working.', video:'https://www.youtube.com/watch?v=XY8KzdDcMFg', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-reverse-crunch-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-reverse-crunch-front.jpg', page:'https://musclewiki.com/exercise/reverse-crunch'},
     ],
-    finisher:'Finisher — treadmill incline sprints: 8 rounds of 30s sprint (10–12 km/h, 5% incline) / 30s walk.'
+    finisher:'Mandatory finisher — treadmill incline sprints: 8 rounds of 30s sprint (10–12 km/h, 5% incline) / 30s walk. This is your fat-burning priority for the day — don\u2019t skip it even if arms/shoulders got trimmed.'
   },
   pull:{
     label:'Pull — back, biceps, rear delts &amp; posterior chain',
-    sub:'Posture correction from desk work, back density, pulling strength. ~60–75 min total.',
+    sub:'Mandatory block first, then extras if time and stamina allow. ~60–75 min total.',
     exercises:[
-      {name:'Conventional deadlift', meta:'Whole posterior chain & core · 4×5 · rest 180s', tip:'Midfoot under the bar, chest up to engage your lats, push the floor away without rounding your lower back.', video:'http://www.youtube.com/watch?v=ZaTM37cfiDs', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-deadlift-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-deadlift-front.jpg', page:'https://musclewiki.com/exercise/barbell-deadlift'},
-      {name:'Lat pulldowns or pull-ups', meta:'Lats · 4×8–10 · rest 90s', tip:'Pull down to your upper chest, drive with your elbows rather than your hands.', video:'http://www.youtube.com/watch?v=SALxEARiMkw', clip:'https://musclewiki.com/api-next/videos/male-machine-pulldown-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-machine-pulldown-front.jpg', page:'https://musclewiki.com/exercise/machine-pulldown'},
-      {name:'Seated cable rows', meta:'Middle back & posture · 3×10–12 · rest 60s', tip:'Pull to your lower ribs, squeeze your shoulder blades together for a full second.', video:'http://www.youtube.com/watch?v=qD1WZ5pSuvk', clip:'https://musclewiki.com/api-next/videos/male-machine-seated-cable-row-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-machine-seated-cable-row-front.jpg', page:'https://musclewiki.com/exercise/machine-seated-cable-row'},
-      {name:'Face pulls', meta:'Rear delts & rotator cuff · 3×15 · rest 60s', tip:'Pull toward your eyes/forehead, finish with hands rotated behind your elbows.', video:'http://www.youtube.com/watch?v=ljgqer1ZpXg', clip:'https://musclewiki.com/api-next/videos/male-Cables-cable-seated-rope-face-pull-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Cables-cable-seated-rope-face-pull-front.jpg', page:'https://musclewiki.com/exercise/cable-seated-rope-face-pull'},
-      {name:'Dumbbell bicep curls', meta:'Biceps · 3×10–12 · rest 60s', tip:'No swinging — keep the elbows locked at your sides.', video:'http://www.youtube.com/watch?v=XE_pHwbst04', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-curl-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-curl-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-curl'},
-      {name:'Kettlebell swings', meta:'Glutes, hamstrings, cardio · 4×20 · rest 45s', tip:'This is a hip hinge, not a squat — snap the hips forward explosively.', video:'http://www.youtube.com/watch?v=aSYap2yhW8s', clip:'https://musclewiki.com/api-next/videos/male-Kettlebells-kettlebell-swing-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Kettlebells-kettlebell-swing-front.jpg', page:'https://musclewiki.com/exercise/kettlebell-swing'},
-      {name:'Plank hold', meta:'Core stability · 3 sets × 60s', tip:'Straight line from ears to ankles, glutes squeezed.', video:'http://www.youtube.com/watch?v=v25dawSzRTM', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-forearm-plank-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-forearm-plank-front.jpg', page:'https://musclewiki.com/exercise/forearm-plank'},
+      {tier:'mandatory', name:'Conventional deadlift', meta:'Whole posterior chain & core · 4×5 · rest 180s', tip:'Midfoot under the bar, chest up to engage your lats, push the floor away without rounding your lower back.', why:'The single best exercise for undoing a day of sitting — nothing fights desk-slump like a strong posterior chain.', video:'http://www.youtube.com/watch?v=ZaTM37cfiDs', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-deadlift-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-deadlift-front.jpg', page:'https://musclewiki.com/exercise/barbell-deadlift'},
+      {tier:'mandatory', name:'Farmer\u2019s carries', meta:'Forearms, grip, traps & core · 3×30–40m walk · rest 90s', tip:'Stand tall, shoulders back, short controlled steps — don\u2019t let the weight round you forward.', why:'Your direct answer to bigger forearms — plus it torches calories and builds the grip strength behind every other lift.', video:'https://www.youtube.com/watch?v=8OtwXwrJizk', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-farmer-walk-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-farmer-walk-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-farmer-walk'},
+      {tier:'mandatory', name:'Lat pulldowns or pull-ups', meta:'Lats · 4×8–10 · rest 90s', tip:'Pull down to your upper chest, drive with your elbows rather than your hands.', why:'This is what gives you the wide-back taper — the visual foundation of an athletic frame.', video:'http://www.youtube.com/watch?v=SALxEARiMkw', clip:'https://musclewiki.com/api-next/videos/male-machine-pulldown-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-machine-pulldown-front.jpg', page:'https://musclewiki.com/exercise/machine-pulldown'},
+      {tier:'mandatory', name:'Face pulls', meta:'Rear delts & rotator cuff · 3×15 · rest 60s', tip:'Pull toward your eyes/forehead, finish with hands rotated behind your elbows.', why:'Cheap insurance for your shoulder joints — keeps you lifting pain-free for years, not just this month.', video:'http://www.youtube.com/watch?v=ljgqer1ZpXg', clip:'https://musclewiki.com/api-next/videos/male-Cables-cable-seated-rope-face-pull-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Cables-cable-seated-rope-face-pull-front.jpg', page:'https://musclewiki.com/exercise/cable-seated-rope-face-pull'},
+      {tier:'mandatory', name:'Kettlebell swings', meta:'Glutes, hamstrings, cardio · 4×20 · rest 45s', tip:'This is a hip hinge, not a squat — snap the hips forward explosively.', why:'Your safest power move — explosive hip drive builds the stamina and hip strength behind an active life (in the gym and out of it).', video:'http://www.youtube.com/watch?v=aSYap2yhW8s', clip:'https://musclewiki.com/api-next/videos/male-Kettlebells-kettlebell-swing-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Kettlebells-kettlebell-swing-front.jpg', page:'https://musclewiki.com/exercise/kettlebell-swing'},
+      {tier:'mandatory', name:'Plank hold', meta:'Core stability · 3 sets × 60s', tip:'Straight line from ears to ankles, glutes squeezed.', why:'Braces your spine under load — this is what lets every heavy lift above actually transfer to real-life strength, pain-free.', video:'http://www.youtube.com/watch?v=v25dawSzRTM', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-forearm-plank-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-forearm-plank-front.jpg', page:'https://musclewiki.com/exercise/forearm-plank'},
+      {tier:'extra', name:'Seated cable rows', meta:'Middle back & posture · 3×10–12 · rest 60s', tip:'Pull to your lower ribs, squeeze your shoulder blades together for a full second.', why:'A direct fix for rounded desk shoulders — pulls you back into an upright, confident posture.', video:'http://www.youtube.com/watch?v=qD1WZ5pSuvk', clip:'https://musclewiki.com/api-next/videos/male-machine-seated-cable-row-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-machine-seated-cable-row-front.jpg', page:'https://musclewiki.com/exercise/machine-seated-cable-row'},
+      {tier:'extra', name:'Dumbbell bicep curls', meta:'Biceps · 3×10–12 · rest 60s', tip:'No swinging — keep the elbows locked at your sides.', why:'Rounds out the forearm-to-bicep look — visible arm size, no shortcuts needed.', video:'http://www.youtube.com/watch?v=XE_pHwbst04', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-curl-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-curl-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-curl'},
+      {tier:'extra', name:'Dead bug', meta:'Deep core & lower back · 3×10 per side · rest 45s', tip:'Press your lower back flat into the floor the whole time — move slow, never let it arch.', why:'The safest possible way to bulletproof your lower back — an extra layer of protection on top of the plank.', video:'https://www.youtube.com/watch?v=XcYtWYMz39w', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-dead-bug-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-dead-bug-front.jpg', page:'https://musclewiki.com/exercise/dead-bug'},
     ],
     finisher:''
   },
   legs:{
     label:'Legs &amp; explosive conditioning',
-    sub:'Explosive leg strength plus a stamina finisher. ~60–75 min total.',
+    sub:'Mandatory block first, then extras if time and stamina allow. ~60–75 min total.',
     exercises:[
-      {name:'Barbell or goblet squats', meta:'Quads & glutes · 4×6–8 · rest 120s', tip:'Squat to 90° or just below, knees tracking your toes.', video:'http://www.youtube.com/watch?v=my0tLDaWyDU', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-squat-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-squat-front.jpg', page:'https://musclewiki.com/exercise/barbell-squat'},
-      {name:'Romanian deadlifts (RDLs)', meta:'Hamstrings & glutes · 3×8–10 · rest 90s', tip:'Keep the weights close to your shins, hinge back until your hamstrings stretch, back flat.', video:'http://www.youtube.com/watch?v=_oyxCn2iSjU', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-romanian-deadlift-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-romanian-deadlift-front.jpg', page:'https://musclewiki.com/exercise/barbell-romanian-deadlift'},
-      {name:'Walking lunges', meta:'Quads & balance · 3×10 per leg · rest 60s', tip:'Step far enough forward that your front knee stays behind or over your midfoot.', video:'http://www.youtube.com/watch?v=Pbmj6xPo-Hw', clip:'https://musclewiki.com/api-next/videos/male-Recovery-lunge-walking-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Recovery-lunge-walking-front.jpg', page:'https://musclewiki.com/exercise/lunge-walking'},
-      {name:'Standing calf raises', meta:'Calves · 4×15–20 · rest 45s', tip:'Full stretch at the bottom, hold 1–2s at the top, no bouncing.', video:'http://www.youtube.com/watch?v=baEXLy09Ncc', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-calf-raises-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-calf-raises-front.jpg', page:'https://musclewiki.com/exercise/calf-raises'},
-      {name:'Russian twists (weighted)', meta:'Obliques · 3×20 · rest 45s', tip:'Rotate your torso side to side — don\u2019t just swing your arms.', video:'http://www.youtube.com/watch?v=iFQV6q4xRXM', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-russian-twist-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-russian-twist-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-russian-twist'},
+      {tier:'mandatory', name:'Barbell or goblet squats', meta:'Quads & glutes · 4×6–8 · rest 120s', tip:'Squat to 90° or just below, knees tracking your toes.', why:'The engine room — squat strength is the #1 predictor of athletic leg power, the source of a footballer\u2019s speed.', video:'http://www.youtube.com/watch?v=my0tLDaWyDU', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-squat-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-squat-front.jpg', page:'https://musclewiki.com/exercise/barbell-squat'},
+      {tier:'mandatory', name:'Romanian deadlifts (RDLs)', meta:'Hamstrings & glutes · 3×8–10 · rest 90s', tip:'Keep the weights close to your shins, hinge back until your hamstrings stretch, back flat.', why:'Builds the hamstring strength that protects your knees and gives your legs that athletic taper from hip to knee.', video:'http://www.youtube.com/watch?v=_oyxCn2iSjU', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-romanian-deadlift-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-romanian-deadlift-front.jpg', page:'https://musclewiki.com/exercise/barbell-romanian-deadlift'},
+      {tier:'mandatory', name:'Hip thrusts', meta:'Glutes, hamstrings & hips · 3×10–12 · rest 90s', tip:'Drive through your heels, tuck your chin, squeeze your glutes hard at the top — don\u2019t hyperextend your lower back.', why:'Builds hip power and glute strength — the engine behind stamina and an active, capable body, and it takes real load off your lower back in daily life.', video:'https://www.youtube.com/watch?v=tTXFD0R11aQ', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-hip-thrust-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-hip-thrust-front.jpg', page:'https://musclewiki.com/exercise/barbell-hip-thrust'},
+      {tier:'mandatory', name:'Walking lunges', meta:'Quads & balance · 3×10 per leg · rest 60s', tip:'Step far enough forward that your front knee stays behind or over your midfoot.', why:'Trains each leg on its own — catches the side-to-side imbalances a squat alone can hide.', video:'http://www.youtube.com/watch?v=Pbmj6xPo-Hw', clip:'https://musclewiki.com/api-next/videos/male-Recovery-lunge-walking-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Recovery-lunge-walking-front.jpg', page:'https://musclewiki.com/exercise/lunge-walking'},
+      {tier:'mandatory', name:'Russian twists (weighted)', meta:'Obliques · 3×20 · rest 45s', tip:'Rotate your torso side to side — don\u2019t just swing your arms.', why:'Builds the rotational core strength behind the V-line and quick change-of-direction — not just visible abs.', video:'http://www.youtube.com/watch?v=iFQV6q4xRXM', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-russian-twist-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-russian-twist-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-russian-twist'},
+      {tier:'extra', name:'Standing calf raises', meta:'Calves · 4×15–20 · rest 45s', tip:'Full stretch at the bottom, hold 1–2s at the top, no bouncing.', why:'The detail most people skip — defined calves are what finish an athletic leg, not an afterthought.', video:'http://www.youtube.com/watch?v=baEXLy09Ncc', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-calf-raises-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-calf-raises-front.jpg', page:'https://musclewiki.com/exercise/calf-raises'},
     ],
-    finisher:'Finisher — exercise bike HIIT: 10 min total, alternating 30s max-effort pedalling with 30s easy recovery.'
+    finisher:'Mandatory finisher — exercise bike HIIT: 10 min total, alternating 30s max-effort pedalling with 30s easy recovery. This is your fat-burning priority for the day.'
   }
 };
 
@@ -519,24 +551,58 @@ function renderWorkout(){
   heading.innerHTML = w.label;
   sub.innerHTML = w.sub;
 
+  function warmupItemHtml(item, i){
+    if (!item.video){
+      return `<li class="warmup-line">• ${item.text}</li>`;
+    }
+    return `<li class="ex-item warmup-item">
+      <div class="ex-row">
+        <div class="ex-info">
+          <div class="ex-tip">${item.text}</div>
+        </div>
+        <div class="ex-actions">
+          <a class="video-btn" href="${item.video}" target="_blank" rel="noopener">Watch full ▸</a>
+          <a class="video-btn" href="${item.page}" target="_blank" rel="noopener">See GIF ▸</a>
+          <button class="clip-toggle" data-clip="${item.clip}" data-fallback-page="${item.page}" data-clip-id="w${i}">Show clip <span class="chev">▾</span></button>
+        </div>
+      </div>
+      <div class="ex-clip" id="clip-w${i}">
+        <video class="clip-video" poster="${item.poster}" muted loop playsinline controls preload="none"></video>
+        <div class="clip-fallback" id="clip-fallback-w${i}">Clip didn't load — <a href="${item.page}" target="_blank" rel="noopener">open it on MuscleWiki instead ▸</a></div>
+      </div>
+    </li>`;
+  }
+
   let html = `<div class="workout-card">
-    <div class="warmup"><strong>${WARMUP.title}</strong>${WARMUP.lines.map(l => `<div>• ${l}</div>`).join('')}</div>
+    <div class="warmup"><strong>${WARMUP.title}</strong>
+      <ul class="ex-list warmup-list">${WARMUP.items.map((item, i) => warmupItemHtml(item, i)).join('')}</ul>
+      <div class="warmup-note">Cat-cow and leg swings/arm circles don\u2019t have a single standard demo to link, so they\u2019re text-only above — everything else has the same Watch full / See GIF / Show clip options as the main exercises.</div>
+    </div>
+    <div class="safety-note">⚠ No spotter? Leave 1–2 reps in reserve on your squat, deadlift, and overhead press sets — don\u2019t grind to failure alone.</div>
     <ul class="ex-list">`;
 
   w.exercises.forEach((ex, i) => {
     const checked = state[day.key].workout[i];
+    const prevTier = i > 0 ? w.exercises[i - 1].tier : null;
+    if (ex.tier === 'extra' && prevTier !== 'extra'){
+      html += `<li class="ex-divider">Extra — if time &amp; stamina allow</li>`;
+    }
     html += `<li class="ex-item">
       <div class="ex-row">
         <div class="t-checkbox ${checked ? 'checked' : ''}" data-idx="${i}">${checked ? '✓' : ''}</div>
         <div class="ex-info">
-          <div class="ex-name ${checked ? 'struck' : ''}">${ex.name}</div>
+          <div class="ex-name-row">
+            <div class="ex-name ${checked ? 'struck' : ''}">${ex.name}</div>
+            <span class="tier-badge tier-${ex.tier}">${ex.tier === 'mandatory' ? 'Mandatory' : 'Extra'}</span>
+          </div>
           <div class="ex-meta">${ex.meta}</div>
           <div class="ex-tip">${ex.tip}</div>
+          <div class="ex-why">★ ${ex.why}</div>
         </div>
         <div class="ex-actions">
           <a class="video-btn" href="${ex.video}" target="_blank" rel="noopener">Watch full ▸</a>
           <a class="video-btn" href="${ex.page}" target="_blank" rel="noopener">See GIF ▸</a>
-          <button class="clip-toggle" data-clip-idx="${i}">Show clip <span class="chev">▾</span></button>
+          <button class="clip-toggle" data-clip="${ex.clip}" data-fallback-page="${ex.page}" data-clip-id="${i}">Show clip <span class="chev">▾</span></button>
         </div>
       </div>
       <div class="ex-clip" id="clip-${i}">
@@ -548,6 +614,7 @@ function renderWorkout(){
 
   html += `</ul>`;
   if (w.finisher) html += `<div class="finisher-note">${w.finisher}</div>`;
+  html += `<div class="lookahead-note"><strong>Looking ahead —</strong> month one is about owning this form safely. Once squat, deadlift, and press feel automatic, month two is where real power and speed work (jump squats, med ball throws, short sprints) gets added.</div>`;
   html += `</div>`;
 
   body.innerHTML = html;
@@ -560,8 +627,9 @@ function renderWorkout(){
   });
   body.querySelectorAll('.clip-toggle').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const idx = btn.getAttribute('data-clip-idx');
-      const panel = document.getElementById('clip-' + idx);
+      const clipId = btn.getAttribute('data-clip-id');
+      const clipUrl = btn.getAttribute('data-clip');
+      const panel = document.getElementById('clip-' + clipId);
       const isOpen = panel.classList.contains('open');
       // close every open panel + reset its button + pause its video
       body.querySelectorAll('.ex-clip.open').forEach(p => {
@@ -578,9 +646,9 @@ function renderWorkout(){
         btn.classList.add('active');
         btn.innerHTML = 'Hide clip <span class="chev">▴</span>';
         const video = panel.querySelector('video');
-        const fallback = document.getElementById('clip-fallback-' + idx);
+        const fallback = document.getElementById('clip-fallback-' + clipId);
         if (!video.src){
-          video.src = w.exercises[idx].clip;
+          video.src = clipUrl;
           video.addEventListener('error', () => {
             video.style.display = 'none';
             fallback.classList.add('show');

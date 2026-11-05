@@ -137,6 +137,9 @@
     font-size:12.5px; padding:6px 12px; border-radius:8px; cursor:pointer;
   }
   .quote-refresh:hover{border-color:var(--gold); color:var(--gold-soft);}
+  .reminder-bar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:16px;}
+  .reminder-status{font-size:12px; color:rgba(255,255,255,0.7);}
+  .reminder-caption{font-size:11.5px; color:rgba(255,255,255,0.5); margin:8px 0 0; max-width:60ch;}
   section h2{font-size:22px; margin-bottom:4px;}
   section .section-sub{color:var(--ink-soft); font-size:14px; margin:0 0 18px;}
 
@@ -348,7 +351,12 @@
       <h1>Your daily rhythm</h1>
       <span class="stat-pill">Age 31 · 87 kg · Month two</span>
     </div>
-    <p class="sub">Five prayers, a fixed gym split around your Mon/Thu/Fri days off, and the meal habits from your notes — now with jump squats, real weights, and a focus toolkit added for month two.</p>
+    <p class="sub">Five prayers, a fixed gym split around your Mon/Thu/Fri days off, and the meal habits from your notes — now with an optional Wednesday bonus day, reminders, and a growth tracker added.</p>
+    <div class="reminder-bar">
+      <button id="enableReminders" class="quote-refresh">🔔 Enable today's reminders</button>
+      <span id="reminderStatus" class="reminder-status"></span>
+    </div>
+    <p class="reminder-caption">Best-effort only — fires while this tab or installed app stays open. OnePlus phones aggressively kill background tabs, so check your battery settings if nothing arrives. Tap the button again each time you reopen the app for that day's remaining reminders.</p>
     <nav class="day-tabs" id="dayTabs"></nav>
   </div>
 </header>
@@ -447,16 +455,33 @@
         <p style="font-size:13.8px; color:var(--ink-soft); margin:0 0 10px;">Purpose beats discipline on the hard days. Not "finish the ticket" — something closer to "this is how I build something that outlasts me, for my family." Write today's version below (this stays on your screen only, nothing is saved).</p>
         <textarea id="ikigaiNote" class="ikigai-input" rows="2" placeholder="Why does today's hard work actually matter to you?"></textarea>
       </div>
+      <div class="habit-card">
+        <h3>Growth — reading (even split)</h3>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0 0 8px;">20–30 minutes, same slot each day if you can. With 9 years in, this isn't about basics — go deep on one thing: a system-design pattern, a language feature you've never needed, or a postmortem from a company your size.</p>
+        <div class="focus-check" style="margin-top:4px;">
+          <div class="t-checkbox" id="readingCheckbox"></div>
+          <span>Reading block done today</span>
+        </div>
+      </div>
+      <div class="habit-card">
+        <h3>Growth — finding clients (even split)</h3>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0 0 8px;">One concrete action a day beats a vague afternoon of "looking." Message one past colleague or client, update one line of your portfolio, or answer one relevant post — pick just one and actually send it.</p>
+        <div class="focus-check" style="margin-top:4px;">
+          <div class="t-checkbox" id="outreachCheckbox"></div>
+          <span>One outreach action done today</span>
+        </div>
+      </div>
     </div>
 
     <div class="timer-card">
       <div class="timer-head">
         <h3 style="margin:0;">Focus timer</h3>
-        <p class="section-sub" style="margin:4px 0 0;">Start it the moment you sit down — before you open anything else.</p>
+        <p class="section-sub" style="margin:4px 0 0;">WFH day and can't sit past 30–60 min? Start with 15 — a real finish beats an abandoned 50.</p>
       </div>
-      <div class="timer-display" id="timerDisplay">25:00</div>
+      <div class="timer-display" id="timerDisplay">15:00</div>
       <div class="timer-controls">
-        <button class="timer-len-btn active" data-mins="25">25 min</button>
+        <button class="timer-len-btn active" data-mins="15">15 min</button>
+        <button class="timer-len-btn" data-mins="25">25 min</button>
         <button class="timer-len-btn" data-mins="50">50 min</button>
         <button class="timer-action" id="timerStartPause">Start</button>
         <button class="timer-action secondary" id="timerReset">Reset</button>
@@ -564,6 +589,21 @@ const WORKOUTS = {
     ],
     finisher:'Mandatory finisher — exercise bike HIIT: 10 min total, alternating 30s max-effort pedalling with 30s easy recovery. This is your fat-burning priority for the day.',
     pepTalk:'Dreading it today? Minimum viable Legs day: Squat + Hip Thrust + 5 min on the bike. That still counts — showing up beats a perfect session, every time. Try saving one playlist or podcast only for leg day — pairing it with something you actually enjoy makes starting a lot easier.'
+  },
+  bonus:{
+    label:'Bonus — back & power',
+    sub:'Totally optional. Only happens if you get the extra day or the extra energy — never a thing to feel behind on.',
+    exercises:[
+      {tier:'mandatory', name:'Back extension (hyperextension)', meta:'Lower back & erectors · 3×12–15 · rest 60s', weight:'Bodyweight first — cross arms over chest. Once that feels easy, hold a plate or your 5kg dumbbell to your chest.', tip:'Hinge from the hips, not the lower spine. Rise to a straight line — don\u2019t arch past it. Gym only has the 45° bench instead of the flat one? Same movement, just a shorter range — works fine.', why:'This is the direct answer to the desk-job back pain — the one muscle group your Push/Pull/Legs split doesn\u2019t train on its own.', video:'https://www.youtube.com/watch?v=gLT-WLH84B4', clip:'https://musclewiki.com/api-next/videos/male-machine-machine-back-extension-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-machine-machine-back-extension-front.jpg', page:'https://musclewiki.com/exercise/machine-back-extension'},
+      {tier:'mandatory', name:'Single-arm dumbbell row', meta:'Lats, mid-back, anti-imbalance · 3×10–12 per arm · rest 60s', weight:'Your 7.5kg dumbbell. Go to 10kg once 3×12 per side feels controlled on both arms.', tip:'Brace your free hand on a bench, flat back, pull with your elbow — not your hand.', why:'Trains each side of your back on its own, which catches imbalances a two-handed row can hide — more of the same posture protection as deadlift day, from a different angle.', video:'https://www.youtube.com/watch?v=fURsHPHgssI', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-single-arm-row-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-single-arm-row-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-single-arm-row'},
+      {tier:'mandatory', name:'Burpees', meta:'Full-body explosive power · 4×8 · rest 90s', weight:'Bodyweight — no medicine ball needed, your own body is the load.', tip:'Squat, hands down, jump feet back to plank, one push-up, jump feet forward, explode up into a jump. No gym has an excuse to skip this one.', why:'The real Anatoly element when there\u2019s no medicine ball around — strong and fast, not bulky, and it torches calories in a hurry.', video:'https://www.youtube.com/watch?v=fZx6nxKMq4E', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-burpee-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-burpee-front.jpg', page:'https://musclewiki.com/exercise/burpee'},
+      {tier:'extra', name:'Heavy farmer\u2019s carry', meta:'Grip, back, traps · 2×50–60m · rest 90s', weight:'Both 7.5kg dumbbells — go longer distance or slower, more controlled steps rather than heavier, since 7.5kg is your ceiling for now.', tip:'Same cue as Pull day: tall posture, controlled steps, don\u2019t let the weight round your shoulders forward.', why:'No mandatory ceiling today, so this is where you can genuinely push the carry further than a normal Pull day allows.', video:'https://www.youtube.com/watch?v=8OtwXwrJizk', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-farmer-walk-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-farmer-walk-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-farmer-walk'},
+      {tier:'extra', name:'Jump rope intervals', meta:'Cardio, calves, coordination · 6×30s fast / 30s rest', weight:'Bodyweight — just the rope, pushed for speed instead of the steady warm-up pace.', tip:'Same motion as your warm-up jump rope, just faster and harder — treat each 30s burst like a sprint.', why:'No sled, no battle ropes needed — this is the simplest, most universally available way to get your heart rate into the fun-but-brutal zone.', video:'https://www.youtube.com/watch?v=nMHfZ-yrFjA', clip:'https://musclewiki.com/api-next/videos/male-Cardio-jump-rope-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Cardio-jump-rope-front.jpg', page:'https://musclewiki.com/exercise/jump-rope'},
+      {tier:'extra', name:'Dumbbell step-ups', meta:'Full-body power, legs & conditioning · 4×10 per leg · rest 90s', weight:'Your 7.5kg pair — step onto a sturdy bench or box, add a second pair later if your gym has one.', tip:'Drive up through the heel of the leg on the box — the trailing leg should do as little work as possible. Control the step down every time.', why:'No sled needed — this builds the same explosive single-leg drive and feels just as satisfying to push hard on.', video:'https://www.youtube.com/watch?v=OxWZ-G-RdCM', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-step-up-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-step-up-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-step-up'},
+      {tier:'extra', name:'Battle ropes', meta:'Shoulders, arms, core, cardio · 6×20–30s waves · rest 45s', weight:'Whatever rope your gym has — this is about speed and waves, not load.', tip:'Quarter-squat stance, slight slack in the rope, alternate arms to build continuous waves. Keep your core braced, let your legs help drive the power.', why:'If your gym has it, this is the most fun 30 seconds in the building — genuinely satisfying, and it torches calories with zero technical risk.', video:'https://www.youtube.com/watch?v=K_Tm3nq6HZw'},
+    ],
+    finisher:'',
+    pepTalk:'This whole day is a bonus, not an obligation. Show up when you have the extra time or the extra energy — skip it freely the rest of the time. No streak, no guilt, just extra strength when it\u2019s genuinely there to spend.'
   }
 };
 
@@ -572,7 +612,7 @@ const DAYS = [
   {key:'sun', label:'Sunday',   short:'Sun', workout:'legs'},
   {key:'mon', label:'Monday',  short:'Mon', workout:null},
   {key:'tue', label:'Tuesday', short:'Tue', workout:'pull'},
-  {key:'wed', label:'Wednesday', short:'Wed', workout:null},
+  {key:'wed', label:'Wednesday', short:'Wed', workout:'bonus'},
   {key:'thu', label:'Thursday', short:'Thu', workout:null},
   {key:'fri', label:'Friday',  short:'Fri', workout:null},
 ];
@@ -595,7 +635,8 @@ function renderTabs(){
   DAYS.forEach(d => {
     const btn = document.createElement('button');
     btn.className = 'day-tab' + (d.key === activeDay ? ' active' : '') + (d.key === todayKey ? ' is-today' : '');
-    btn.innerHTML = d.label + (d.workout ? '<small>' + WORKOUTS[d.workout].label.split(' — ')[0] + '</small>' : '<small>Rest from lifting</small>');
+    const smallText = d.workout === 'bonus' ? 'Optional \u2014 Bonus' : (d.workout ? WORKOUTS[d.workout].label.split(' — ')[0] : 'Rest from lifting');
+    btn.innerHTML = d.label + '<small>' + smallText + '</small>';
     btn.addEventListener('click', () => { activeDay = d.key; renderAll(); });
     dayTabsEl.appendChild(btn);
   });
@@ -671,7 +712,7 @@ function renderWorkout(){
   if (state[day.key].workout.length !== w.exercises.length){
     state[day.key].workout = w.exercises.map(() => false);
   }
-  heading.innerHTML = w.label;
+  heading.innerHTML = w.label + (day.workout === 'bonus' ? ' <span class="tier-badge" style="background:var(--sage); color:#fff;">Optional</span>' : '');
   sub.innerHTML = w.sub;
 
   function warmupItemHtml(item, i){
@@ -727,14 +768,14 @@ function renderWorkout(){
         </div>
         <div class="ex-actions">
           <a class="video-btn" href="${ex.video}" target="_blank" rel="noopener">Watch full ▸</a>
-          <a class="video-btn" href="${ex.page}" target="_blank" rel="noopener">See demo page ▸</a>
-          <button class="clip-toggle" data-clip="${ex.clip}" data-fallback-page="${ex.page}" data-clip-id="${i}">Show clip <span class="chev">▾</span></button>
+          ${ex.page ? `<a class="video-btn" href="${ex.page}" target="_blank" rel="noopener">See demo page ▸</a>` : ''}
+          ${ex.clip ? `<button class="clip-toggle" data-clip="${ex.clip}" data-fallback-page="${ex.page}" data-clip-id="${i}">Show clip <span class="chev">▾</span></button>` : ''}
         </div>
       </div>
-      <div class="ex-clip" id="clip-${i}">
+      ${ex.clip ? `<div class="ex-clip" id="clip-${i}">
         <video class="clip-video" poster="${ex.poster}" muted loop playsinline controls preload="none"></video>
         <div class="clip-fallback" id="clip-fallback-${i}">Clip didn't load — <a href="${ex.page}" target="_blank" rel="noopener">open it on MuscleWiki instead ▸</a></div>
-      </div>
+      </div>` : ''}
     </li>`;
   });
 
@@ -849,8 +890,75 @@ focusCheckbox.addEventListener('click', () => {
   focusCheckbox.textContent = focusDone ? '✓' : '';
 });
 
+let readingDone = false;
+const readingCheckbox = document.getElementById('readingCheckbox');
+readingCheckbox.addEventListener('click', () => {
+  readingDone = !readingDone;
+  readingCheckbox.classList.toggle('checked', readingDone);
+  readingCheckbox.textContent = readingDone ? '✓' : '';
+});
+
+let outreachDone = false;
+const outreachCheckbox = document.getElementById('outreachCheckbox');
+outreachCheckbox.addEventListener('click', () => {
+  outreachDone = !outreachDone;
+  outreachCheckbox.classList.toggle('checked', outreachDone);
+  outreachCheckbox.textContent = outreachDone ? '✓' : '';
+});
+
+/* ---------------- Reminders ---------------- */
+function getTodayKey(){
+  const map = {0:'sun',1:'mon',2:'tue',3:'wed',4:'thu',5:'fri',6:'sat'};
+  return map[new Date().getDay()];
+}
+
+const REMINDER_EVENTS = [
+  {label:'Fajr prayer', time:'04:30', body:'Time for Fajr.'},
+  {label:'Gym', time:'08:00', body:'Session time — warm up first.', gymOnly:true},
+  {label:'Focus block', time:'11:30', body:'A good window for a protected deep-work block.'},
+  {label:'Dhuhr prayer', time:'13:30', body:'Time for Dhuhr.'},
+  {label:'Asr prayer', time:'16:45', body:'Time for Asr — a good break from the desk.'},
+  {label:'Maghrib prayer', time:'18:30', body:'Time for Maghrib.'},
+  {label:'Isha prayer', time:'20:15', body:'Time for Isha.'},
+];
+
+const enableRemindersBtn = document.getElementById('enableReminders');
+const reminderStatus = document.getElementById('reminderStatus');
+
+enableRemindersBtn.addEventListener('click', () => {
+  if (!('Notification' in window)){
+    reminderStatus.textContent = 'Notifications aren\u2019t supported in this browser.';
+    return;
+  }
+  Notification.requestPermission().then(permission => {
+    if (permission !== 'granted'){
+      reminderStatus.textContent = 'Permission not granted — reminders won\u2019t fire.';
+      return;
+    }
+    const today = DAYS.find(d => d.key === getTodayKey());
+    const now = new Date();
+    let scheduled = 0;
+    REMINDER_EVENTS.forEach(ev => {
+      if (ev.gymOnly && !today.workout) return;
+      const [hh, mm] = ev.time.split(':').map(Number);
+      const target = new Date();
+      target.setHours(hh, mm, 0, 0);
+      if (target > now){
+        const msUntil = target - now;
+        setTimeout(() => {
+          try { new Notification(ev.label, {body: ev.body}); } catch(e){}
+        }, msUntil);
+        scheduled++;
+      }
+    });
+    reminderStatus.textContent = scheduled > 0
+      ? scheduled + ' reminder(s) scheduled for the rest of today.'
+      : 'Nothing left to schedule for today — check back tomorrow.';
+  });
+});
+
 /* ---------------- Deep-work timer ---------------- */
-let timerMinutes = 25;
+let timerMinutes = 15;
 let timerSecondsLeft = timerMinutes * 60;
 let timerInterval = null;
 let timerRunning = false;

@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Daily Rhythm — Month One</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#17302B;
+    --ink-soft:#3E5750;
+    --paper:#F1E9D8;
+    --paper-raised:#FBF7EC;
+    --gold:#C08A34;
+    --gold-soft:#EAD9B2;
+    --sage:#5F7F60;
+    --sage-soft:#DCE6D5;
+    --clay:#B2543A;
+    --clay-soft:#F1DCCF;
+    --line:#DCCEAA;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    margin:0;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:relative;
+    padding:44px 24px 28px;
+    background:var(--ink);
+    color:var(--paper-raised);
+    overflow:hidden;
+  }
+  header .pattern{
+    position:absolute;
+    inset:0;
+    opacity:0.16;
+    background-image:
+      linear-gradient(30deg, transparent 46%, var(--gold) 46%, var(--gold) 48%, transparent 48%),
+      linear-gradient(-30deg, transparent 46%, var(--gold) 46%, var(--gold) 48%, transparent 48%),
+      linear-gradient(90deg, transparent 46%, var(--gold) 46%, var(--gold) 48%, transparent 48%);
+    background-size:64px 64px;
+    pointer-events:none;
+  }
+  header .inner{position:relative; max-width:900px; margin:0 auto;}
+  .eyebrow-row{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  header h1{font-size:clamp(28px,4.4vw,40px); color:#fff;}
+  header p.sub{
+    margin:8px 0 0;
+    color:var(--gold-soft);
+    font-size:15px;
+    max-width:52ch;
+  }
+  .stat-pill{
+    font-size:13px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.18);
+    padding:6px 12px;
+    border-radius:999px;
+    color:var(--paper-raised);
+    white-space:nowrap;
+  }
+
+  /* ---------- Day tabs ---------- */
+  .day-tabs{
+    display:flex;
+    gap:8px;
+    margin-top:26px;
+    overflow-x:auto;
+    padding-bottom:4px;
+  }
+  .day-tab{
+    flex:0 0 auto;
+    padding:10px 16px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.2);
+    background:transparent;
+    color:var(--paper-raised);
+    cursor:pointer;
+    font-size:14px;
+    font-weight:500;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+    transition:background .15s, border-color .15s;
+  }
+  .day-tab small{opacity:.65; font-size:11px;}
+  .day-tab.active{
+    background:var(--gold);
+    border-color:var(--gold);
+    color:var(--ink);
+  }
+  .day-tab.active small{opacity:.75;}
+  .day-tab.is-today:not(.active){border-color:var(--gold);}
+
+  /* ---------- Layout ---------- */
+  main{
+    max-width:900px;
+    margin:0 auto;
+    padding:32px 24px 20px;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:32px;
+  }
+  .quote-card{
+    background:var(--ink); color:var(--paper-raised);
+    border-radius:var(--radius); padding:22px 24px; position:relative; overflow:hidden;
+  }
+  .quote-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--gold-soft); margin-bottom:8px;}
+  .quote-text{font-family:'Fraunces',serif; font-size:19px; line-height:1.45; margin:0 0 8px; color:#fff;}
+  .quote-source{font-size:12.5px; color:rgba(255,255,255,0.65); margin-bottom:14px;}
+  .quote-nudge{
+    background:rgba(192,138,52,0.18); border:1px solid rgba(192,138,52,0.4);
+    color:var(--gold-soft); font-size:13px; border-radius:8px; padding:10px 12px; margin-bottom:14px;
+  }
+  .quote-refresh{
+    background:transparent; border:1px solid rgba(255,255,255,0.3); color:rgba(255,255,255,0.85);
+    font-size:12.5px; padding:6px 12px; border-radius:8px; cursor:pointer;
+  }
+  .quote-refresh:hover{border-color:var(--gold); color:var(--gold-soft);}
+  section h2{font-size:22px; margin-bottom:4px;}
+  section .section-sub{color:var(--ink-soft); font-size:14px; margin:0 0 18px;}
+
+  .progress-line{
+    display:flex; align-items:center; gap:10px;
+    font-size:13px; color:var(--ink-soft); margin-bottom:16px;
+  }
+  .progress-track{
+    flex:1; height:6px; border-radius:4px; background:var(--line); overflow:hidden;
+  }
+  .progress-fill{height:100%; background:var(--gold); width:0%; transition:width .2s;}
+  .reset-btn{
+    border:1px solid var(--line); background:var(--paper-raised);
+    color:var(--ink-soft); padding:4px 10px; border-radius:8px; font-size:12px; cursor:pointer;
+  }
+  .reset-btn:hover{border-color:var(--gold); color:var(--ink);}
+
+  /* ---------- Timeline ---------- */
+  .timeline{list-style:none; margin:0; padding:0;}
+  .t-item{
+    display:flex; gap:14px;
+    padding:13px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .t-item:last-child{border-bottom:none;}
+  .t-checkbox{
+    flex:0 0 auto; width:20px; height:20px; margin-top:2px;
+    border-radius:6px; border:1.5px solid var(--ink-soft);
+    background:var(--paper-raised);
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    color:transparent; font-size:13px;
+  }
+  .t-checkbox.checked{background:var(--sage); border-color:var(--sage); color:#fff;}
+  .t-body{flex:1; min-width:0;}
+  .t-top{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .t-time{font-size:12px; font-weight:600; color:var(--ink-soft); white-space:nowrap;}
+  .t-title{font-size:15px; font-weight:600;}
+  .t-title.struck{text-decoration:line-through; opacity:.5;}
+  .t-tag{
+    font-size:11px; padding:2px 8px; border-radius:999px; font-weight:500;
+  }
+  .tag-prayer{background:var(--gold-soft); color:#7A5417;}
+  .tag-meal{background:var(--sage-soft); color:#3C5A3D;}
+  .tag-gym{background:var(--clay-soft); color:#8A3D28;}
+  .tag-rest{background:var(--line); color:var(--ink-soft);}
+  .t-note{font-size:13.5px; color:var(--ink-soft); margin-top:2px;}
+  .t-link{font-size:12.5px; color:var(--gold); font-weight:600; text-decoration:none; white-space:nowrap;}
+
+  /* ---------- Workout ---------- */
+  .workout-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px;
+  }
+  .rest-day-card{
+    background:var(--paper-raised);
+    border:1px dashed var(--line);
+    border-radius:var(--radius);
+    padding:26px;
+    color:var(--ink-soft);
+    font-size:14.5px;
+  }
+  .warmup{
+    background:var(--sage-soft);
+    border-radius:10px;
+    padding:14px 16px;
+    font-size:13.5px;
+    color:#2F4A31;
+    margin-bottom:18px;
+  }
+  .warmup strong{display:block; font-family:'Fraunces',serif; font-size:15px; margin-bottom:4px; color:var(--ink);}
+  .warmup-list{list-style:none; margin:8px 0 0; padding:0; display:flex; flex-direction:column; gap:8px;}
+  .warmup-line{list-style:none; padding:2px 0;}
+  .warmup-item{background:rgba(255,255,255,0.55); border-color:rgba(255,255,255,0.7);}
+  .warmup-item .ex-tip{color:#2F4A31; font-style:normal; margin-top:0;}
+  .warmup-note{font-size:12px; color:#3C5A3D; opacity:.8; margin-top:10px; font-style:italic;}
+  .safety-note{
+    background:var(--clay-soft); color:#7A3821; font-size:13px; font-weight:500;
+    border-radius:10px; padding:10px 14px; margin-bottom:18px;
+  }
+  .pep-note{
+    background:var(--sage-soft); color:#2F4A31; font-size:13px; font-weight:500;
+    border-radius:10px; padding:10px 14px; margin-bottom:18px;
+  }
+  .weight-note{
+    background:var(--paper-raised); border:1px solid var(--line); color:var(--ink-soft);
+    font-size:12.5px; border-radius:10px; padding:10px 14px; margin-bottom:18px;
+  }
+  .lookahead-note{
+    margin-top:14px; padding:12px 14px; border-radius:10px; background:var(--gold-soft); color:#6B4A15; font-size:13px;
+  }
+  .lookahead-note strong{font-family:'Fraunces',serif; color:var(--ink);}
+  .ex-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .ex-item{
+    background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:12px 14px;
+  }
+  .ex-row{display:flex; gap:12px; align-items:flex-start;}
+  .ex-info{flex:1; min-width:0;}
+  .ex-name-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .ex-name{font-weight:600; font-size:14.5px;}
+  .ex-name.struck{text-decoration:line-through; opacity:.5;}
+  .tier-badge{font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:999px; letter-spacing:.02em;}
+  .tier-mandatory{background:var(--gold); color:#fff;}
+  .tier-extra{background:transparent; border:1px solid var(--line); color:var(--ink-soft);}
+  .ex-divider{
+    list-style:none; font-size:12px; font-weight:700; color:var(--ink-soft);
+    text-transform:uppercase; letter-spacing:.04em; padding:10px 4px 2px; border-top:1px dashed var(--line); margin-top:4px;
+  }
+  .ex-meta{font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
+  .ex-weight{font-size:12.5px; color:#3C5A3D; margin-top:4px; font-weight:600;}
+  .ex-tip{font-size:12.5px; color:var(--ink-soft); margin-top:4px; font-style:italic;}
+  .ex-why{font-size:12.5px; color:#8A6417; margin-top:6px; font-weight:600;}
+  .ex-actions{display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex:0 0 auto;}
+  .video-btn{
+    font-size:12px; font-weight:600; color:var(--ink);
+    background:var(--gold-soft); border:1px solid var(--gold);
+    padding:5px 10px; border-radius:8px; text-decoration:none; white-space:nowrap;
+    display:inline-block;
+  }
+  .video-btn:hover{background:var(--gold); color:#fff;}
+  .clip-toggle{
+    font-size:12px; font-weight:600; color:var(--ink-soft);
+    background:transparent; border:1px solid var(--line);
+    padding:5px 10px; border-radius:8px; cursor:pointer; white-space:nowrap;
+  }
+  .clip-toggle:hover{border-color:var(--sage); color:var(--ink);}
+  .clip-toggle.active{background:var(--sage-soft); border-color:var(--sage); color:#2F4A31;}
+  .clip-toggle .chev{display:inline-block; margin-left:2px;}
+  .ex-clip{
+    max-height:0; overflow:hidden; transition:max-height .25s ease;
+  }
+  .ex-clip.open{max-height:380px; margin-top:12px;}
+  .clip-video{
+    width:100%; max-height:320px; border-radius:8px; background:var(--ink); display:block;
+    object-fit:contain;
+  }
+  .clip-fallback{
+    display:none; font-size:12.5px; color:var(--ink-soft); margin-top:8px; padding:8px 10px;
+    background:var(--clay-soft); border-radius:8px;
+  }
+  .clip-fallback.show{display:block;}
+  .clip-fallback a{color:#8A3D28; font-weight:600;}
+  .finisher-note{
+    margin-top:14px; padding:12px 14px; border-radius:10px; background:var(--clay-soft); color:#7A3821; font-size:13px;
+  }
+
+  /* ---------- Habit fixes ---------- */
+  .habits-grid{display:grid; grid-template-columns:1fr; gap:16px;}
+  @media (min-width:720px){ .habits-grid{grid-template-columns:1fr 1fr;} }
+  .habit-card{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius); padding:20px;
+  }
+  .habit-card h3{font-size:16.5px; margin-bottom:10px;}
+  .habit-card ol, .habit-card ul{margin:0; padding-left:18px; font-size:13.8px; color:var(--ink-soft); display:flex; flex-direction:column; gap:6px;}
+  .swap-table{width:100%; border-collapse:collapse; font-size:13.2px;}
+  .swap-table th{text-align:left; font-weight:600; color:var(--ink-soft); font-size:12px; padding-bottom:6px; border-bottom:1px solid var(--line);}
+  .swap-table td{padding:8px 0; border-bottom:1px solid var(--line); vertical-align:top;}
+  .swap-table tr:last-child td{border-bottom:none;}
+  .out{color:var(--clay); font-weight:500;}
+  .in{color:var(--sage); font-weight:600;}
+
+  .ikigai-input{
+    width:100%; box-sizing:border-box; resize:vertical; min-height:48px;
+    border:1px solid var(--line); border-radius:8px; padding:10px 12px;
+    font-family:'Work Sans', sans-serif; font-size:13.5px; color:var(--ink);
+    background:var(--paper);
+  }
+  .ikigai-input:focus{outline:none; border-color:var(--gold);}
+  .timer-card{
+    background:var(--ink); color:var(--paper-raised); border-radius:var(--radius);
+    padding:22px 24px; text-align:center; margin-top:20px;
+  }
+  .timer-head h3{font-family:'Fraunces',serif; font-size:17px; color:#fff;}
+  .timer-head .section-sub{color:rgba(255,255,255,0.6);}
+  .timer-display{
+    font-family:'Fraunces',serif; font-size:48px; font-weight:600; color:var(--gold-soft);
+    margin:14px 0; letter-spacing:.02em;
+  }
+  .timer-controls{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:10px;}
+  .timer-len-btn{
+    background:transparent; border:1px solid rgba(255,255,255,0.3); color:rgba(255,255,255,0.8);
+    font-size:12.5px; padding:6px 12px; border-radius:999px; cursor:pointer;
+  }
+  .timer-len-btn.active{background:var(--gold); border-color:var(--gold); color:var(--ink); font-weight:600;}
+  .timer-action{
+    background:var(--sage); border:none; color:#fff; font-size:13px; font-weight:600;
+    padding:7px 16px; border-radius:999px; cursor:pointer;
+  }
+  .timer-action.secondary{background:transparent; border:1px solid rgba(255,255,255,0.3); color:rgba(255,255,255,0.8); font-weight:500;}
+  .timer-status{font-size:12.5px; color:rgba(255,255,255,0.65); min-height:16px;}
+  .focus-check{
+    display:flex; align-items:center; gap:10px; margin-top:16px;
+    font-size:13.5px; color:var(--ink-soft);
+  }
+
+  footer{
+    max-width:900px; margin:12px auto 40px; padding:0 24px;
+    font-size:12.5px; color:var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="pattern"></div>
+  <div class="inner">
+    <div class="eyebrow-row">
+      <h1>Your daily rhythm</h1>
+      <span class="stat-pill">Age 31 · 87 kg · Month two</span>
+    </div>
+    <p class="sub">Five prayers, a fixed gym split around your Mon/Thu/Fri days off, and the meal habits from your notes — now with jump squats, real weights, and a focus toolkit added for month two.</p>
+    <nav class="day-tabs" id="dayTabs"></nav>
+  </div>
+</header>
+
+<main>
+  <section id="quoteSection">
+    <div class="quote-card">
+      <div class="quote-label" id="quoteLabel"></div>
+      <p class="quote-text" id="quoteText"></p>
+      <div class="quote-source" id="quoteSource"></div>
+      <div class="quote-nudge" id="quoteNudge" style="display:none;"></div>
+      <button class="quote-refresh" id="quoteRefresh">New quote ↻</button>
+    </div>
+  </section>
+
+  <section id="timelineSection">
+    <h2 id="timelineHeading"></h2>
+    <p class="section-sub" id="timelineSub"></p>
+    <div class="progress-line">
+      <span id="progressLabel">0 / 0 done</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <button class="reset-btn" id="resetBtn">Reset today</button>
+    </div>
+    <ul class="timeline" id="timelineList"></ul>
+  </section>
+
+  <section id="workoutSection">
+    <h2 id="workoutHeading">Workout</h2>
+    <p class="section-sub" id="workoutSub"></p>
+    <div id="workoutBody"></div>
+  </section>
+
+  <section id="habitsSection">
+    <h2>Habit fixes</h2>
+    <p class="section-sub">Reference for every day — not just gym days.</p>
+    <div class="habits-grid">
+      <div class="habit-card">
+        <h3>The 3 tea rules</h3>
+        <ol>
+          <li><strong>Zero-calorie sweetener.</strong> Swap sugar for stevia, sucralose, or Equal — tastes nearly identical in milk tea, drops the sugar to zero.</li>
+          <li><strong>Control the milk.</strong> 2–3 tbsp semi-skimmed or low-fat milk per cup, not condensed or full-cream.</li>
+          <li><strong>5:00 PM cut-off.</strong> No caffeinated tea after this — it's still in your system past midnight and will hurt your 12:30 AM sleep.</li>
+        </ol>
+      </div>
+      <div class="habit-card">
+        <h3>Hydration &amp; portions</h3>
+        <ul>
+          <li>Aim for 3 litres of water across the day.</li>
+          <li>Lunch rice: keep it to roughly 1–1.5 cooked cups, not a heaped plate.</li>
+          <li>Watch the oil in dal and vegetable dishes — it hides 150–300 easy calories a day.</li>
+          <li>Dinner stays rice- and roti-free, which is already working in your favour.</li>
+        </ul>
+      </div>
+      <div class="habit-card" style="grid-column:1/-1;">
+        <h3>6:00–7:00 PM snack swap</h3>
+        <table class="swap-table">
+          <tr><th>Instead of</th><th>Reach for</th><th>Why</th></tr>
+          <tr><td class="out">Instant noodles / Maggi</td><td class="in">Boiled chana chaat (chickpeas, cucumber, tomato, onion, lemon)</td><td>Fibre + slow protein keeps you full to 10:30 PM.</td></tr>
+          <tr><td class="out">Singara / samosa / biscuits</td><td class="in">2 boiled eggs, or muri + roasted peanuts</td><td>No refined flour or trans fat; supports gym recovery.</td></tr>
+          <tr><td class="out">Bakery patties / fried snacks</td><td class="in">Grilled chicken tikka or shami kebab, minimal oil</td><td>Pure protein, no insulin spike before Maghrib.</td></tr>
+        </table>
+      </div>
+      <div class="habit-card" style="grid-column:1/-1;">
+        <h3>On the V-line and forearm definition</h3>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0;">The hanging leg raises, reverse crunch, and Russian twists build the muscle underneath the V-line — but whether it actually shows depends mostly on your body-fat percentage, not how many ab exercises you do. Same story with forearms: farmer's carries build the muscle, but definition shows once the fat over it drops. This is exactly why the tea rules, portion sizes, and snack swaps above matter as much as anything in the workout — they're what actually reveals what you're building.</p>
+      </div>
+      <div class="habit-card">
+        <h3>When dinner drifts back to rice</h3>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0;">This happens to basically everyone around the one-month mark — the rule stops feeling fresh and it quietly slides. It's not a willpower failure, just a cue that faded. If it slips again, don't wait for next week — just reset at the very next dinner. One off night costs almost nothing; a slow drift back to every night is what actually stalls the scale.</p>
+      </div>
+      <div class="habit-card">
+        <h3>Not feeling sleepy at bedtime?</h3>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0;">That's usually light, not a lack of tiredness. Phone and screen light suppress melatonin, so your body can be genuinely exhausted and still not feel sleepy at 12:30 if a bright screen was in front of your face ten minutes earlier. Putting the phone out of reach 15–20 minutes before that Sleep slot — even just on a charger across the room — is a small change that works on this specific problem directly, rather than relying on willpower to just "put it down."</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="focusSection">
+    <h2>Focus &amp; deep work</h2>
+    <p class="section-sub">For the X.com-at-midnight problem — built from Atomic Habits, Deep Work, and Ikigai, adapted to your actual day.</p>
+
+    <div class="habits-grid">
+      <div class="habit-card">
+        <h3>Atomic Habits — make it the default</h3>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0 0 8px;"><strong>Habit-stack it:</strong> attach one deep-work block directly after something you already do — right after Asr, or the moment you sit down after lunch. Don't go looking for free time; borrow it from a habit that already exists.</p>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0 0 8px;"><strong>The 2-minute rule:</strong> when a BandWix task feels too big to start, commit to just 2 minutes — open the file, write one line. Starting is the only hard part.</p>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0;"><strong>Make the bad habit harder:</strong> log out of X.com on your work browser, or move it off your home screen. One extra tap of friction beats willpower almost every time.</p>
+      </div>
+      <div class="habit-card">
+        <h3>Deep Work — protect one block</h3>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0 0 8px;">Pick <strong>one</strong> fixed block a day — even 45 minutes — for BandWix's hardest technical work. Phone in another room, door closed if you can. Treat it like a meeting you're not allowed to skip.</p>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0;"><strong>Shutdown ritual:</strong> end the block by writing down where you stopped and what's next — even one line. That's what lets your mind actually let go instead of looping on it all evening.</p>
+      </div>
+      <div class="habit-card" style="grid-column:1/-1;">
+        <h3>Ikigai — reconnect to why</h3>
+        <p style="font-size:13.8px; color:var(--ink-soft); margin:0 0 10px;">Purpose beats discipline on the hard days. Not "finish the ticket" — something closer to "this is how I build something that outlasts me, for my family." Write today's version below (this stays on your screen only, nothing is saved).</p>
+        <textarea id="ikigaiNote" class="ikigai-input" rows="2" placeholder="Why does today's hard work actually matter to you?"></textarea>
+      </div>
+    </div>
+
+    <div class="timer-card">
+      <div class="timer-head">
+        <h3 style="margin:0;">Focus timer</h3>
+        <p class="section-sub" style="margin:4px 0 0;">Start it the moment you sit down — before you open anything else.</p>
+      </div>
+      <div class="timer-display" id="timerDisplay">25:00</div>
+      <div class="timer-controls">
+        <button class="timer-len-btn active" data-mins="25">25 min</button>
+        <button class="timer-len-btn" data-mins="50">50 min</button>
+        <button class="timer-action" id="timerStartPause">Start</button>
+        <button class="timer-action secondary" id="timerReset">Reset</button>
+      </div>
+      <div class="timer-status" id="timerStatus"></div>
+    </div>
+
+    <div class="focus-check">
+      <div class="t-checkbox" id="focusCheckbox"></div>
+      <span>I did my protected deep-work block today</span>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Checkmarks live only in this browser tab — reloading the page clears them, nothing is saved anywhere. Screenshot a day if you want a record of it.
+</footer>
+
+<script>
+/* ---------------- Data ---------------- */
+
+const CATS = {
+  prayer:{tag:'Prayer', cls:'tag-prayer'},
+  meal:{tag:'Meal', cls:'tag-meal'},
+  gym:{tag:'Gym', cls:'tag-gym'},
+  rest:{tag:'', cls:'tag-rest'},
+};
+
+function baseTimeline(workoutLabel){
+  return [
+    {time:'4:30 AM', title:'Fajr prayer', note:'Wudu, then pray Fajr.', cat:'prayer'},
+    {time:'5:00 AM', title:'Back to sleep', note:'Second sleep block, about 2h15m.', cat:'rest'},
+    {time:'7:15 AM', title:'Wake &amp; hydrate', note:'500 ml water. Optional black coffee or a banana before training.', cat:'rest'},
+    workoutLabel
+      ? {time:'8:00 – 9:00 AM', title:'Gym — ' + workoutLabel, note:'10-min warm-up, then today\u2019s session below.', cat:'gym', jump:true}
+      : {time:'8:00 – 8:20 AM', title:'Light movement (optional)', note:'A short walk or stretching — no lifting today, let the last session recover.', cat:'rest'},
+    {time:'9:15 – 9:45 AM', title:'Breakfast', note:'3–4 eggs + 1 slice brown bread/roti + sugar-free milk tea.', cat:'meal'},
+    {time:'10:00 – 10:30 AM', title:'Head to office', note:'', cat:'rest'},
+    {time:'1:30 PM', title:'Dhuhr &amp; lunch', note:'1–1.5 cups rice + double portion fish/chicken + dal + vegetables.', cat:'prayer'},
+    {time:'4:45 PM', title:'Asr prayer', note:'A 10-minute break from your desk.', cat:'prayer'},
+    {time:'5:00 PM', title:'Afternoon tea', note:'2nd cup, sugar-free — your last caffeine of the day.', cat:'meal'},
+    {time:'6:30 PM', title:'Maghrib &amp; snack', note:'Pray, then a high-protein snack — see Habit fixes below.', cat:'prayer'},
+    {time:'8:15 PM', title:'Isha prayer', note:'', cat:'prayer'},
+    {time:'10:30 PM', title:'Home', note:'Shift out of work mode.', cat:'rest'},
+    {time:'10:45 PM', title:'Dinner', note:'No rice or roti — grilled/curried fish or chicken + vegetables or soup. This one meal is doing more for the scale than anything else this month — easy to let slide, worth protecting.', cat:'meal'},
+    {time:'11:15 PM – 12:30 AM', title:'Family time', note:'Feed the baby, unwind together.', cat:'rest'},
+    {time:'12:30 AM', title:'Sleep', note:'Lights out until Fajr. Phone away 15–20 min before this — screen light delays melatonin, which is usually why you don\u2019t feel sleepy yet even when you\u2019re tired.', cat:'rest'},
+  ];
+}
+
+const WARMUP = {
+  title:'10-minute warm-up — do this before every session',
+  items:[
+    {text:'3–4 min light cardio (stationary bike or jump rope) to raise your core temperature.', video:'https://www.youtube.com/watch?v=nMHfZ-yrFjA', clip:'https://musclewiki.com/api-next/videos/male-Cardio-jump-rope-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Cardio-jump-rope-front.jpg', page:'https://musclewiki.com/exercise/jump-rope'},
+    {text:'Kneeling hip-flexor stretch, 30s per side — undoes hours of sitting and protects your squat/deadlift form.', video:'https://www.youtube.com/watch?v=Q4Ko275cluo', clip:'https://musclewiki.com/api-next/videos/male-Recovery-hip-flexor-stretch-kneeling-lunge-1-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Recovery-hip-flexor-stretch-kneeling-lunge-1-front.jpg', page:'https://musclewiki.com/exercise/hip-flexor-stretch-kneeling-lunge-1'},
+    {text:'Thoracic rotations or cat-cow, 8–10 reps — opens the upper back that desk posture rounds forward, helps your press and bench.'},
+    {text:'2 sets × 10–12 slow bodyweight squats to open up hips and knees.', video:'https://www.youtube.com/watch?v=D_CUqVqW4F8', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-bodyweight-squat-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-bodyweight-squat-front.jpg', page:'https://musclewiki.com/exercise/bodyweight-squat'},
+    {text:'10 leg swings and 10 arm circles per side for joint mobility.'},
+    {text:'One light warm-up set of the first lift (empty bar or light dumbbells) before going heavy.'},
+  ]
+};
+
+const WORKOUTS = {
+  push:{
+    label:'Push — chest, shoulders, triceps &amp; core',
+    sub:'Month 2: same mandatory block, heavier where you\u2019ve earned it. Extras if time and stamina allow. ~60–75 min total.',
+    exercises:[
+      {tier:'mandatory', name:'Incline dumbbell press', meta:'Upper chest & front delts · 4×6–8 · rest 120s', weight:'Your 7.5kg pair. If the last 2 reps of set 4 feel easy, that\u2019s your cue to ask the gym for 10kg dumbbells.', tip:'30° bench, elbows tucked ~45° from your torso — don\u2019t flare wide.', why:'Upper-chest fullness is the first thing people notice through a t-shirt — this is where that V-taper starts.', video:'http://www.youtube.com/watch?v=ou6s32mJgjU', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-incline-bench-press-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-incline-bench-press-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-incline-bench-press'},
+      {tier:'mandatory', name:'Standing barbell overhead press', meta:'Shoulders & core · 3×6–8 · rest 90s', weight:'Empty bar (20kg) or the lightest fixed bar your gym has — stay here until all 3 sets are clean, then add 2.5–5kg.', tip:'Brace your core and glutes, move your head back as the bar passes, press straight overhead.', why:'Boulder shoulders are Anatoly\u2019s signature look — nothing builds that width faster than pressing overhead.', video:'http://www.youtube.com/watch?v=nNMR9fRGRjQ', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-overhead-press-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-overhead-press-front.jpg', page:'https://musclewiki.com/exercise/barbell-overhead-press'},
+      {tier:'mandatory', name:'Parallel bar dips (or bench dips)', meta:'Lower chest & triceps · 3×8–10 · rest 60s', weight:'Bodyweight only for now — add a weight belt only once 3×10 feels controlled, not before.', tip:'Lean forward for chest, stay upright for triceps. Avoid going below 90° if shoulders complain.', why:'Carves the tricep horseshoe that shows the second you roll your sleeves up.', video:'http://www.youtube.com/watch?v=P5TlJiu68lA', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-bench-dips-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-bench-dips-front.jpg', page:'https://musclewiki.com/exercise/bench-dips'},
+      {tier:'mandatory', name:'Hanging leg raises', meta:'Lower abs · 3×12–15 · rest 45s', weight:'Bodyweight — this one stays bodyweight even as everything else gets heavier.', tip:'Curl your pelvis up rather than just swinging the legs.', why:'Directly builds the lower-ab V-line you asked for, and protects your back when you pick up your kid.', video:'http://www.youtube.com/watch?v=Pr1ieGZ5atk', clip:'https://musclewiki.com/api-next/videos/male-bodyweight-hanging-knee-raises-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-bodyweight-hanging-knee-raises-front.jpg', page:'https://musclewiki.com/exercise/hanging-knee-raises'},
+      {tier:'extra', name:'Dumbbell lateral raises', meta:'Side shoulders · 3×12–15 · rest 60s', weight:'Your 5kg pair — this one stays light on purpose, strict form matters far more than load here.', tip:'Lean slightly forward, raise in the scapular plane — a touch ahead of straight out to the side.', why:'The cheapest way to add shoulder width — it makes your waist look narrower without losing a pound.', video:'http://www.youtube.com/watch?v=Kl3LEzQ5Zqs', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-lateral-raise-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-lateral-raise-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-lateral-raise'},
+      {tier:'extra', name:'Tricep rope pushdowns', meta:'Triceps · 3×12 · rest 60s', weight:'Start light on the cable stack — roughly 25–30% of the full stack, adjust by feel.', tip:'Pin elbows to your sides, squeeze fully at the bottom, control the way back up.', why:'This is what makes an arm look separated and defined, not just bigger.', video:'http://www.youtube.com/watch?v=1FjkhpZsaxc', clip:'https://musclewiki.com/api-next/videos/male-Machine-machine-tricep-pushdown-side.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Machine-machine-tricep-pushdown-side.jpg', page:'https://musclewiki.com/exercise/machine-tricep-pushdown'},
+      {tier:'extra', name:'Reverse crunch', meta:'Lower abs · 3×12–15 · rest 45s', weight:'Bodyweight only.', tip:'Curl your hips toward your ribs, not your knees toward your face — slow and controlled, no swinging.', why:'A second angle on the V-line — the lower-ab detail most people skip because it\u2019s the hardest to feel working.', video:'https://www.youtube.com/watch?v=XY8KzdDcMFg', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-reverse-crunch-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-reverse-crunch-front.jpg', page:'https://musclewiki.com/exercise/reverse-crunch'},
+    ],
+    finisher:'Mandatory finisher — treadmill incline sprints: 8 rounds of 30s sprint (10–12 km/h, 5% incline) / 30s walk. This is your fat-burning priority for the day — don\u2019t skip it even if arms/shoulders got trimmed.'
+  },
+  pull:{
+    label:'Pull — back, biceps, rear delts &amp; posterior chain',
+    sub:'Month 2: same mandatory block, heavier where you\u2019ve earned it. Extras if time and stamina allow. ~60–75 min total.',
+    exercises:[
+      {tier:'mandatory', name:'Conventional deadlift', meta:'Whole posterior chain & core · 4×5 · rest 180s', weight:'Empty bar (20kg) + a small plate each side if the bar alone feels too easy for 4×5 — add 2.5–5kg total every 2 weeks from there.', tip:'Midfoot under the bar, chest up to engage your lats, push the floor away without rounding your lower back.', why:'The single best exercise for undoing a day of sitting — nothing fights desk-slump like a strong posterior chain.', video:'http://www.youtube.com/watch?v=ZaTM37cfiDs', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-deadlift-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-deadlift-front.jpg', page:'https://musclewiki.com/exercise/barbell-deadlift'},
+      {tier:'mandatory', name:'Farmer\u2019s carries', meta:'Forearms, grip, traps & core · 3×30–40m walk · rest 90s', weight:'Your 7.5kg pair in each hand — this is the one exercise where your dumbbells are already enough challenge for a while.', tip:'Stand tall, shoulders back, short controlled steps — don\u2019t let the weight round you forward.', why:'Your direct answer to bigger forearms — plus it torches calories and builds the grip strength behind every other lift.', video:'https://www.youtube.com/watch?v=8OtwXwrJizk', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-farmer-walk-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-farmer-walk-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-farmer-walk'},
+      {tier:'mandatory', name:'Lat pulldowns or pull-ups', meta:'Lats · 4×8–10 · rest 90s', weight:'Start around 40–50% of the stack. If you can do a few real pull-ups already, skip the machine and use those instead.', tip:'Pull down to your upper chest, drive with your elbows rather than your hands.', why:'This is what gives you the wide-back taper — the visual foundation of an athletic frame.', video:'http://www.youtube.com/watch?v=SALxEARiMkw', clip:'https://musclewiki.com/api-next/videos/male-machine-pulldown-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-machine-pulldown-front.jpg', page:'https://musclewiki.com/exercise/machine-pulldown'},
+      {tier:'mandatory', name:'Face pulls', meta:'Rear delts & rotator cuff · 3×15 · rest 60s', weight:'Light on the cable — roughly 15–20% of the stack. This is a joint-health move, not a strength one; ego weight defeats the point.', tip:'Pull toward your eyes/forehead, finish with hands rotated behind your elbows.', why:'Cheap insurance for your shoulder joints — keeps you lifting pain-free for years, not just this month.', video:'http://www.youtube.com/watch?v=ljgqer1ZpXg', clip:'https://musclewiki.com/api-next/videos/male-Cables-cable-seated-rope-face-pull-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Cables-cable-seated-rope-face-pull-front.jpg', page:'https://musclewiki.com/exercise/cable-seated-rope-face-pull'},
+      {tier:'mandatory', name:'Kettlebell swings', meta:'Glutes, hamstrings, cardio · 4×20 · rest 45s', weight:'A 12–16kg kettlebell if your gym has one. No kettlebell? Hold one of your 7.5kg dumbbells with both hands instead.', tip:'This is a hip hinge, not a squat — snap the hips forward explosively.', why:'Your safest power move — explosive hip drive builds the stamina and hip strength behind an active life (in the gym and out of it).', video:'http://www.youtube.com/watch?v=aSYap2yhW8s', clip:'https://musclewiki.com/api-next/videos/male-Kettlebells-kettlebell-swing-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Kettlebells-kettlebell-swing-front.jpg', page:'https://musclewiki.com/exercise/kettlebell-swing'},
+      {tier:'mandatory', name:'Plank hold', meta:'Core stability · 3 sets × 60s', weight:'Bodyweight. Once 3×60s feels easy, hold longer before adding any weight plate on your back.', tip:'Straight line from ears to ankles, glutes squeezed.', why:'Braces your spine under load — this is what lets every heavy lift above actually transfer to real-life strength, pain-free.', video:'http://www.youtube.com/watch?v=v25dawSzRTM', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-forearm-plank-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-forearm-plank-front.jpg', page:'https://musclewiki.com/exercise/forearm-plank'},
+      {tier:'extra', name:'Seated cable rows', meta:'Middle back & posture · 3×10–12 · rest 60s', weight:'Start around 30–40% of the stack, same honest test as every other machine: last rep hard, not impossible.', tip:'Pull to your lower ribs, squeeze your shoulder blades together for a full second.', why:'A direct fix for rounded desk shoulders — pulls you back into an upright, confident posture.', video:'http://www.youtube.com/watch?v=qD1WZ5pSuvk', clip:'https://musclewiki.com/api-next/videos/male-machine-seated-cable-row-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-machine-seated-cable-row-front.jpg', page:'https://musclewiki.com/exercise/machine-seated-cable-row'},
+      {tier:'extra', name:'Dumbbell bicep curls', meta:'Biceps · 3×10–12 · rest 60s', weight:'Your 7.5kg pair. If you can\u2019t keep strict form (no swinging) for all 3 sets, drop to the 5kg pair instead.', tip:'No swinging — keep the elbows locked at your sides.', why:'Rounds out the forearm-to-bicep look — visible arm size, no shortcuts needed.', video:'http://www.youtube.com/watch?v=XE_pHwbst04', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-curl-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-curl-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-curl'},
+      {tier:'extra', name:'Dead bug', meta:'Deep core & lower back · 3×10 per side · rest 45s', weight:'Bodyweight only.', tip:'Press your lower back flat into the floor the whole time — move slow, never let it arch.', why:'The safest possible way to bulletproof your lower back — an extra layer of protection on top of the plank.', video:'https://www.youtube.com/watch?v=XcYtWYMz39w', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-dead-bug-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-dead-bug-front.jpg', page:'https://musclewiki.com/exercise/dead-bug'},
+    ],
+    finisher:''
+  },
+  legs:{
+    label:'Legs &amp; explosive conditioning',
+    sub:'Month 2: jump squats added for real power work, now that your squat form is solid. Mandatory block first, extras after. ~60–75 min total.',
+    exercises:[
+      {tier:'mandatory', name:'Jump squats', meta:'Explosive power · 3×8 · rest 90s', weight:'Bodyweight only — this exercise is about speed, not load. Land soft, reset fully between reps.', tip:'Drop into a normal squat depth, then explode straight up and land softly before the next rep.', why:'This is the real month-2 upgrade — the explosive power that turns gym strength into actual athletic speed and quickness.', video:'https://www.youtube.com/watch?v=D_CUqVqW4F8', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-jump-squats-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-jump-squats-front.jpg', page:'https://musclewiki.com/exercise/jump-squats'},
+      {tier:'mandatory', name:'Barbell or goblet squats', meta:'Quads & glutes · 4×6–8 · rest 120s', weight:'Empty bar (20kg) to start, or goblet-hold one of your 7.5kg dumbbells against your chest if no bar/rack is free.', tip:'Squat to 90° or just below, knees tracking your toes.', why:'The engine room — squat strength is the #1 predictor of athletic leg power, the source of a footballer\u2019s speed.', video:'http://www.youtube.com/watch?v=my0tLDaWyDU', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-squat-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-squat-front.jpg', page:'https://musclewiki.com/exercise/barbell-squat'},
+      {tier:'mandatory', name:'Romanian deadlifts (RDLs)', meta:'Hamstrings & glutes · 3×8–10 · rest 90s', weight:'Empty bar, or your 7.5kg dumbbells in each hand if the bar isn\u2019t free.', tip:'Keep the weights close to your shins, hinge back until your hamstrings stretch, back flat.', why:'Builds the hamstring strength that protects your knees and gives your legs that athletic taper from hip to knee.', video:'http://www.youtube.com/watch?v=_oyxCn2iSjU', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-romanian-deadlift-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-romanian-deadlift-front.jpg', page:'https://musclewiki.com/exercise/barbell-romanian-deadlift'},
+      {tier:'mandatory', name:'Hip thrusts', meta:'Glutes, hamstrings & hips · 3×10–12 · rest 90s', weight:'Bodyweight first session; once 3×12 feels easy, rest a barbell with a pad across your hips, starting with just the empty bar.', tip:'Drive through your heels, tuck your chin, squeeze your glutes hard at the top — don\u2019t hyperextend your lower back.', why:'Builds hip power and glute strength — the engine behind stamina and an active, capable body, and it takes real load off your lower back in daily life.', video:'https://www.youtube.com/watch?v=tTXFD0R11aQ', clip:'https://musclewiki.com/api-next/videos/male-Barbell-barbell-hip-thrust-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Barbell-barbell-hip-thrust-front.jpg', page:'https://musclewiki.com/exercise/barbell-hip-thrust'},
+      {tier:'extra', name:'Walking lunges', meta:'Quads & balance · 3×10 per leg · rest 60s', weight:'Bodyweight only for now — balance comes before load on a one-leg-at-a-time move.', tip:'Step far enough forward that your front knee stays behind or over your midfoot.', why:'Trains each leg on its own — catches the side-to-side imbalances a squat alone can hide.', video:'http://www.youtube.com/watch?v=Pbmj6xPo-Hw', clip:'https://musclewiki.com/api-next/videos/male-Recovery-lunge-walking-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Recovery-lunge-walking-front.jpg', page:'https://musclewiki.com/exercise/lunge-walking'},
+      {tier:'extra', name:'Russian twists (weighted)', meta:'Obliques · 3×20 · rest 45s', weight:'Your 5kg dumbbell, held with both hands.', tip:'Rotate your torso side to side — don\u2019t just swing your arms.', why:'Builds the rotational core strength behind the V-line and quick change-of-direction — not just visible abs.', video:'http://www.youtube.com/watch?v=iFQV6q4xRXM', clip:'https://musclewiki.com/api-next/videos/male-Dumbbells-dumbbell-russian-twist-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Dumbbells-dumbbell-russian-twist-front.jpg', page:'https://musclewiki.com/exercise/dumbbell-russian-twist'},
+      {tier:'extra', name:'Standing calf raises', meta:'Calves · 4×15–20 · rest 45s', weight:'Bodyweight, or your 7.5kg pair held at your sides once bodyweight feels too easy.', tip:'Full stretch at the bottom, hold 1–2s at the top, no bouncing.', why:'The detail most people skip — defined calves are what finish an athletic leg, not an afterthought.', video:'http://www.youtube.com/watch?v=baEXLy09Ncc', clip:'https://musclewiki.com/api-next/videos/male-Bodyweight-calf-raises-front.mp4', poster:'https://musclewiki.com/api-next/images/og-male-Bodyweight-calf-raises-front.jpg', page:'https://musclewiki.com/exercise/calf-raises'},
+    ],
+    finisher:'Mandatory finisher — exercise bike HIIT: 10 min total, alternating 30s max-effort pedalling with 30s easy recovery. This is your fat-burning priority for the day.',
+    pepTalk:'Dreading it today? Minimum viable Legs day: Squat + Hip Thrust + 5 min on the bike. That still counts — showing up beats a perfect session, every time. Try saving one playlist or podcast only for leg day — pairing it with something you actually enjoy makes starting a lot easier.'
+  }
+};
+
+const DAYS = [
+  {key:'sat', label:'Saturday', short:'Sat', workout:'push'},
+  {key:'sun', label:'Sunday',   short:'Sun', workout:'legs'},
+  {key:'mon', label:'Monday',  short:'Mon', workout:null},
+  {key:'tue', label:'Tuesday', short:'Tue', workout:'pull'},
+  {key:'wed', label:'Wednesday', short:'Wed', workout:null},
+  {key:'thu', label:'Thursday', short:'Thu', workout:null},
+  {key:'fri', label:'Friday',  short:'Fri', workout:null},
+];
+
+/* ---------------- State ---------------- */
+const state = {}; // dayKey -> { timeline: [bool], workout: [bool] }
+DAYS.forEach(d => state[d.key] = { timeline: [], workout: [] });
+
+let activeDay = (function(){
+  const jsDay = new Date().getDay(); // 0 Sun .. 6 Sat
+  const map = {0:'sun',1:'mon',2:'tue',3:'wed',4:'thu',5:'fri',6:'sat'};
+  return map[jsDay];
+})();
+
+/* ---------------- Render ---------------- */
+const dayTabsEl = document.getElementById('dayTabs');
+function renderTabs(){
+  dayTabsEl.innerHTML = '';
+  const todayKey = (function(){ const map = {0:'sun',1:'mon',2:'tue',3:'wed',4:'thu',5:'fri',6:'sat'}; return map[new Date().getDay()]; })();
+  DAYS.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'day-tab' + (d.key === activeDay ? ' active' : '') + (d.key === todayKey ? ' is-today' : '');
+    btn.innerHTML = d.label + (d.workout ? '<small>' + WORKOUTS[d.workout].label.split(' — ')[0] + '</small>' : '<small>Rest from lifting</small>');
+    btn.addEventListener('click', () => { activeDay = d.key; renderAll(); });
+    dayTabsEl.appendChild(btn);
+  });
+}
+
+function iconHtml(){ return ''; }
+
+function renderTimeline(){
+  const day = DAYS.find(d => d.key === activeDay);
+  const workoutLabel = day.workout ? WORKOUTS[day.workout].label.split(' — ')[0] + ' day' : null;
+  const items = baseTimeline(workoutLabel);
+  if (state[day.key].timeline.length !== items.length){
+    state[day.key].timeline = items.map(() => false);
+  }
+
+  document.getElementById('timelineHeading').textContent = day.label;
+  document.getElementById('timelineSub').textContent = day.workout
+    ? 'Gym day — ' + WORKOUTS[day.workout].label.replace(/&amp;/g,'&')
+    : 'Rest from lifting — same prayers, meals, and habits.';
+
+  const list = document.getElementById('timelineList');
+  list.innerHTML = '';
+  items.forEach((item, i) => {
+    const li = document.createElement('li');
+    li.className = 't-item';
+    const checked = state[day.key].timeline[i];
+    const cat = CATS[item.cat];
+    li.innerHTML = `
+      <div class="t-checkbox ${checked ? 'checked' : ''}" data-idx="${i}">${checked ? '✓' : ''}</div>
+      <div class="t-body">
+        <div class="t-top">
+          <span class="t-time">${item.time}</span>
+          <span class="t-title ${checked ? 'struck' : ''}">${item.title}</span>
+          ${cat.tag ? `<span class="t-tag ${cat.cls}">${cat.tag}</span>` : ''}
+          ${item.jump ? `<a class="t-link" href="#workoutSection">See session ↓</a>` : ''}
+        </div>
+        ${item.note ? `<div class="t-note">${item.note}</div>` : ''}
+      </div>`;
+    li.querySelector('.t-checkbox').addEventListener('click', () => {
+      state[day.key].timeline[i] = !state[day.key].timeline[i];
+      renderTimeline();
+    });
+    list.appendChild(li);
+  });
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const day = DAYS.find(d => d.key === activeDay);
+  const tl = state[day.key].timeline;
+  const wk = state[day.key].workout;
+  const total = tl.length + wk.length;
+  const done = tl.filter(Boolean).length + wk.filter(Boolean).length;
+  document.getElementById('progressLabel').textContent = `${done} / ${total} done`;
+  document.getElementById('progressFill').style.width = total ? (done / total * 100) + '%' : '0%';
+}
+
+function renderWorkout(){
+  const day = DAYS.find(d => d.key === activeDay);
+  const heading = document.getElementById('workoutHeading');
+  const sub = document.getElementById('workoutSub');
+  const body = document.getElementById('workoutBody');
+
+  if (!day.workout){
+    heading.innerHTML = 'Workout';
+    sub.textContent = '';
+    body.innerHTML = `<div class="rest-day-card">No lifting today. Keep the rest of the schedule as normal and let your last session do its work — a short walk or light stretching is welcome, nothing more.</div>`;
+    return;
+  }
+
+  const w = WORKOUTS[day.workout];
+  if (state[day.key].workout.length !== w.exercises.length){
+    state[day.key].workout = w.exercises.map(() => false);
+  }
+  heading.innerHTML = w.label;
+  sub.innerHTML = w.sub;
+
+  function warmupItemHtml(item, i){
+    if (!item.video){
+      return `<li class="warmup-line">• ${item.text}</li>`;
+    }
+    return `<li class="ex-item warmup-item">
+      <div class="ex-row">
+        <div class="ex-info">
+          <div class="ex-tip">${item.text}</div>
+        </div>
+        <div class="ex-actions">
+          <a class="video-btn" href="${item.video}" target="_blank" rel="noopener">Watch full ▸</a>
+          <a class="video-btn" href="${item.page}" target="_blank" rel="noopener">See demo page ▸</a>
+          <button class="clip-toggle" data-clip="${item.clip}" data-fallback-page="${item.page}" data-clip-id="w${i}">Show clip <span class="chev">▾</span></button>
+        </div>
+      </div>
+      <div class="ex-clip" id="clip-w${i}">
+        <video class="clip-video" poster="${item.poster}" muted loop playsinline controls preload="none"></video>
+        <div class="clip-fallback" id="clip-fallback-w${i}">Clip didn't load — <a href="${item.page}" target="_blank" rel="noopener">open it on MuscleWiki instead ▸</a></div>
+      </div>
+    </li>`;
+  }
+
+  let html = `<div class="workout-card">
+    <div class="warmup"><strong>${WARMUP.title}</strong>
+      <ul class="ex-list warmup-list">${WARMUP.items.map((item, i) => warmupItemHtml(item, i)).join('')}</ul>
+      <div class="warmup-note">Cat-cow and leg swings/arm circles don\u2019t have a single standard demo to link, so they\u2019re text-only above — everything else has the same Watch full / See demo page / Show clip options as the main exercises.</div>
+    </div>
+    <div class="safety-note">⚠ No spotter? Leave 1–2 reps in reserve on your squat, deadlift, and overhead press sets — don\u2019t grind to failure alone.</div>
+    <div class="weight-note">🏋 Weights below are Month 2 starting points, built around your 5kg and 7.5kg dumbbells. If the last rep of your last set still feels easy, go up next time. If form breaks down, go down — there's no prize for the heavier number.</div>
+    ${w.pepTalk ? `<div class="pep-note">💪 ${w.pepTalk}</div>` : ''}
+    <ul class="ex-list">`;
+
+  w.exercises.forEach((ex, i) => {
+    const checked = state[day.key].workout[i];
+    const prevTier = i > 0 ? w.exercises[i - 1].tier : null;
+    if (ex.tier === 'extra' && prevTier !== 'extra'){
+      html += `<li class="ex-divider">Extra — if time &amp; stamina allow</li>`;
+    }
+    html += `<li class="ex-item">
+      <div class="ex-row">
+        <div class="t-checkbox ${checked ? 'checked' : ''}" data-idx="${i}">${checked ? '✓' : ''}</div>
+        <div class="ex-info">
+          <div class="ex-name-row">
+            <div class="ex-name ${checked ? 'struck' : ''}">${ex.name}</div>
+            <span class="tier-badge tier-${ex.tier}">${ex.tier === 'mandatory' ? 'Mandatory' : 'Extra'}</span>
+          </div>
+          <div class="ex-meta">${ex.meta}</div>
+          <div class="ex-weight">🏋 ${ex.weight}</div>
+          <div class="ex-tip">${ex.tip}</div>
+          <div class="ex-why">★ ${ex.why}</div>
+        </div>
+        <div class="ex-actions">
+          <a class="video-btn" href="${ex.video}" target="_blank" rel="noopener">Watch full ▸</a>
+          <a class="video-btn" href="${ex.page}" target="_blank" rel="noopener">See demo page ▸</a>
+          <button class="clip-toggle" data-clip="${ex.clip}" data-fallback-page="${ex.page}" data-clip-id="${i}">Show clip <span class="chev">▾</span></button>
+        </div>
+      </div>
+      <div class="ex-clip" id="clip-${i}">
+        <video class="clip-video" poster="${ex.poster}" muted loop playsinline controls preload="none"></video>
+        <div class="clip-fallback" id="clip-fallback-${i}">Clip didn't load — <a href="${ex.page}" target="_blank" rel="noopener">open it on MuscleWiki instead ▸</a></div>
+      </div>
+    </li>`;
+  });
+
+  html += `</ul>`;
+  if (w.finisher) html += `<div class="finisher-note">${w.finisher}</div>`;
+  html += `<div class="lookahead-note"><strong>Looking ahead —</strong> month one is about owning this form safely. Once squat, deadlift, and press feel automatic, month two is where real power and speed work (jump squats, med ball throws, short sprints) gets added.</div>`;
+  html += `</div>`;
+
+  body.innerHTML = html;
+  body.querySelectorAll('.ex-row .t-checkbox').forEach((el, i) => {
+    el.addEventListener('click', () => {
+      state[day.key].workout[i] = !state[day.key].workout[i];
+      renderWorkout();
+      updateProgress();
+    });
+  });
+  body.querySelectorAll('.clip-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const clipId = btn.getAttribute('data-clip-id');
+      const clipUrl = btn.getAttribute('data-clip');
+      const panel = document.getElementById('clip-' + clipId);
+      const isOpen = panel.classList.contains('open');
+      // close every open panel + reset its button + pause its video
+      body.querySelectorAll('.ex-clip.open').forEach(p => {
+        p.classList.remove('open');
+        const v = p.querySelector('video');
+        v.pause();
+      });
+      body.querySelectorAll('.clip-toggle.active').forEach(b => {
+        b.classList.remove('active');
+        b.innerHTML = 'Show clip <span class="chev">▾</span>';
+      });
+      if (!isOpen){
+        panel.classList.add('open');
+        btn.classList.add('active');
+        btn.innerHTML = 'Hide clip <span class="chev">▴</span>';
+        const video = panel.querySelector('video');
+        const fallback = document.getElementById('clip-fallback-' + clipId);
+        if (!video.src){
+          video.src = clipUrl;
+          video.addEventListener('error', () => {
+            video.style.display = 'none';
+            fallback.classList.add('show');
+          });
+        }
+        video.play().catch(() => {
+          fallback.classList.add('show');
+        });
+      }
+    });
+  });
+
+  updateProgress();
+}
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  const day = DAYS.find(d => d.key === activeDay);
+  state[day.key].timeline = state[day.key].timeline.map(() => false);
+  state[day.key].workout = state[day.key].workout.map(() => false);
+  renderAll();
+});
+
+/* ---------------- Motivation quotes ---------------- */
+const QUOTES = [
+  {text:'Indeed, with hardship comes ease. Indeed, with hardship comes ease.', source:'Qur\u2019an, Ash-Sharh 94:5\u20136', cat:'quran'},
+  {text:'Indeed, Allah will not change the condition of a people until they change what is in themselves.', source:'Qur\u2019an, Ar-Ra\u2019d 13:11', cat:'quran'},
+  {text:'Allah does not burden a soul beyond that it can bear.', source:'Qur\u2019an, Al-Baqarah 2:286', cat:'quran'},
+  {text:'The strong believer is better and more beloved to Allah than the weak believer, though there is good in both.', source:'Prophet Muhammad \uFDFA, Sahih Muslim 2664', cat:'hadith'},
+  {text:'The most beloved deeds to Allah are those that are most consistent, even if they are small.', source:'Prophet Muhammad \uFDFA, Sahih al-Bukhari 6465', cat:'hadith'},
+  {text:'There are two blessings which many people lose: health and free time.', source:'Prophet Muhammad \uFDFA, Sahih al-Bukhari', cat:'hadith'},
+  {text:'Small and consistent beats big and occasional, every single time.', source:'Principle \u2014 Atomic Habits', cat:'principle'},
+  {text:'The first two minutes decide whether the whole session happens. Just start those two minutes.', source:'Principle \u2014 Atomic Habits', cat:'principle'},
+  {text:'Attention is the scarce resource now. Protect your deep hours the way you\u2019d protect your money.', source:'Principle \u2014 Deep Work', cat:'principle'},
+  {text:'A life with less noise and more depth beats a life of constant shallow scrolling.', source:'Principle \u2014 Deep Work', cat:'principle'},
+  {text:'Find where your strength, your passion, and what your family needs from you overlap \u2014 that\u2019s worth building the day around.', source:'Principle \u2014 Ikigai', cat:'principle'},
+  {text:'Showing up tired still counts. Showing up at all is the whole game.', source:'Daily reminder', cat:'secular'},
+  {text:'The version of you that you\u2019re building isn\u2019t made today \u2014 it\u2019s made on the days you don\u2019t feel like it.', source:'Daily reminder', cat:'secular'},
+  {text:'Your prayer, your training, and your family are the real game. X.com will still be there in an hour \u2014 your focus might not be.', source:'Daily reminder', cat:'secular'},
+];
+
+function timeContext(){
+  const h = new Date().getHours();
+  if (h >= 23 || h < 4) return {label:'Late night check-in', nudge:'It\u2019s late \u2014 this is usually when the scroll starts. Close it, and let tomorrow\u2019s you thank tonight\u2019s you for the sleep.'};
+  if (h < 10) return {label:'Morning focus', nudge:null};
+  if (h < 15) return {label:'Midday reset', nudge:null};
+  if (h < 19) return {label:'Afternoon check-in', nudge:null};
+  return {label:'Evening wind-down', nudge:'Dinner and the phone-away window are coming up \u2014 worth protecting both.'};
+}
+
+function renderQuote(){
+  const ctx = timeContext();
+  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  document.getElementById('quoteLabel').textContent = ctx.label;
+  document.getElementById('quoteText').textContent = '\u201C' + q.text + '\u201D';
+  document.getElementById('quoteSource').textContent = '\u2014 ' + q.source;
+  const nudgeEl = document.getElementById('quoteNudge');
+  if (ctx.nudge){
+    nudgeEl.textContent = ctx.nudge;
+    nudgeEl.style.display = 'block';
+  } else {
+    nudgeEl.style.display = 'none';
+  }
+}
+document.getElementById('quoteRefresh').addEventListener('click', renderQuote);
+
+/* ---------------- Focus check-in ---------------- */
+let focusDone = false;
+const focusCheckbox = document.getElementById('focusCheckbox');
+focusCheckbox.addEventListener('click', () => {
+  focusDone = !focusDone;
+  focusCheckbox.classList.toggle('checked', focusDone);
+  focusCheckbox.textContent = focusDone ? '✓' : '';
+});
+
+/* ---------------- Deep-work timer ---------------- */
+let timerMinutes = 25;
+let timerSecondsLeft = timerMinutes * 60;
+let timerInterval = null;
+let timerRunning = false;
+
+const timerDisplay = document.getElementById('timerDisplay');
+const timerStatus = document.getElementById('timerStatus');
+const timerStartPause = document.getElementById('timerStartPause');
+
+function formatTime(totalSeconds){
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function updateTimerDisplay(){
+  timerDisplay.textContent = formatTime(timerSecondsLeft);
+}
+
+document.querySelectorAll('.timer-len-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (timerRunning) return;
+    document.querySelectorAll('.timer-len-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    timerMinutes = parseInt(btn.getAttribute('data-mins'), 10);
+    timerSecondsLeft = timerMinutes * 60;
+    updateTimerDisplay();
+    timerStatus.textContent = '';
+  });
+});
+
+timerStartPause.addEventListener('click', () => {
+  if (!timerRunning){
+    timerRunning = true;
+    timerStartPause.textContent = 'Pause';
+    timerStatus.textContent = 'Phone away. X.com will still be there when this ends.';
+    timerInterval = setInterval(() => {
+      timerSecondsLeft--;
+      updateTimerDisplay();
+      if (timerSecondsLeft <= 0){
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerStartPause.textContent = 'Start';
+        timerStatus.textContent = 'Block complete — mark your check-in below.';
+      }
+    }, 1000);
+  } else {
+    timerRunning = false;
+    clearInterval(timerInterval);
+    timerStartPause.textContent = 'Start';
+    timerStatus.textContent = 'Paused.';
+  }
+});
+
+document.getElementById('timerReset').addEventListener('click', () => {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSecondsLeft = timerMinutes * 60;
+  timerStartPause.textContent = 'Start';
+  timerStatus.textContent = '';
+  updateTimerDisplay();
+});
+
+updateTimerDisplay();
+
+function renderAll(){
+  renderTabs();
+  renderTimeline();
+  renderWorkout();
+  renderQuote();
+}
+
+renderAll();
+</script>
+</body>
+</html>
